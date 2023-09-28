@@ -1,5 +1,4 @@
 #include "../header.h"
-#include "viewdelegate.h"
 #include "appdelegate.h"
 
 void AlxAppDelegate::applicationDidFinishLaunching(NS::Notification* pNotification)

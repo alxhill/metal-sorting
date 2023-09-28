@@ -39,9 +39,6 @@ LDFLAGS=-framework Metal -framework Foundation -framework Cocoa -framework CoreG
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) $< -o $@
 
-%.o: %.mm
-	$(CC) -c $(CFLAGS) $< -o $@
-
 all: build/main
 
 .PHONY: all
@@ -50,8 +47,6 @@ build/shaders.metallib: $(METAL_FILES)
 	xcrun -sdk macosx metal -frecord-sources=flat -o $@ $(METAL_FILES)
 
 build/main: $(OBJECTS) build/shaders.metallib Makefile
-	echo $(CPP_FILES)
-	echo $(OBJECTS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
 
 ### For future reference:
