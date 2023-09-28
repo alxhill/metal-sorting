@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     // app->setDelegate(&del);
     // app->run();
 
-    auto random_ints = generate_values<int>(1000000);
+    std::vector<unsigned int> random_ints = generate_uints(1000000);
 
     time_func("stdlib sort", [&random_ints]() {
         sort_stdlib(random_ints);
