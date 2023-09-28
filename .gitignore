@@ -1,0 +1,4 @@
+*.o
+*.air
+*.metallib
+build/*
