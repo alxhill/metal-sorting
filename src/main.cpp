@@ -1,6 +1,6 @@
 #include <iostream>
 #include <simd/simd.h>
-#include "boring.cpp"
+#include ".cpp"
 
 class AlxRenderer : public Drawable
 {

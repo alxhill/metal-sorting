@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-OBJECTS=src/main.o
+SOURCES = $(shell find . -name '*.cpp' -or -name '*.mm')
+OBJECTS = $(SOURCES:.cpp=.o)
 
 METAL_FILES := $(wildcard src/metal/*.metal)
 
@@ -38,6 +39,9 @@ LDFLAGS=-framework Metal -framework Foundation -framework Cocoa -framework CoreG
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) $< -o $@
 
+%.o: %.mm
+	$(CC) -c $(CFLAGS) $< -o $@
+
 all: build/main
 
 .PHONY: all
@@ -46,6 +50,8 @@ build/shaders.metallib: $(METAL_FILES)
 	xcrun -sdk macosx metal -frecord-sources=flat -o $@ $(METAL_FILES)
 
 build/main: $(OBJECTS) build/shaders.metallib Makefile
+	echo $(CPP_FILES)
+	echo $(OBJECTS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
 
 ### For future reference:

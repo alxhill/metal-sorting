@@ -1,31 +1,5 @@
-#define NS_PRIVATE_IMPLEMENTATION
-#define MTL_PRIVATE_IMPLEMENTATION
-#define MTK_PRIVATE_IMPLEMENTATION
-#define CA_PRIVATE_IMPLEMENTATION
-#include <Metal/Metal.hpp>
-#include <AppKit/AppKit.hpp>
-#include <MetalKit/MetalKit.hpp>
-
-// simple abstract class for the renderer so I
-// don't have to define it before the app delegate
-class Drawable {
-    public:
-        virtual void draw(MTK::View* pView) = 0;
-        virtual ~Drawable() = default;
-};
-
-
-class AlxMTKViewDelegate: public MTK::ViewDelegate
-{
-    public:
-        AlxMTKViewDelegate( MTL::Device* pDevice );
-        virtual ~AlxMTKViewDelegate() override;
-        virtual void drawInMTKView( MTK::View* pView ) override;
-
-    private:
-        Drawable* _pRenderer;
-};
-
+#include "../header.h"
+#include "viewdelegate.h"
 
 class AlxAppDelegate : public NS::ApplicationDelegate
 {
@@ -135,19 +109,4 @@ void AlxAppDelegate::applicationWillFinishLaunching(NS::Notification* pNotificat
 bool AlxAppDelegate::applicationShouldTerminateAfterLastWindowClosed( NS::Application* pSender )
 {
     return true;
-}
-
-AlxMTKViewDelegate::~AlxMTKViewDelegate()
-{
-    delete _pRenderer;
-}
-
-void AlxMTKViewDelegate::drawInMTKView( MTK::View* pView )
-{
-    _pRenderer->draw( pView );
-}
-
-NS::String* str( const char* pStr )
-{
-    return NS::String::string( pStr, NS::StringEncoding::UTF8StringEncoding );
 }
