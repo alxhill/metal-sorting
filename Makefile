@@ -33,7 +33,7 @@ CC=clang++
 CFLAGS=-Wall -std=c++17 -I./metal-cpp -I./metal-cpp-extensions -fno-objc-arc $(DBG_OPT_FLAGS) $(ASAN_FLAGS)
 LDFLAGS=-framework Metal -framework Foundation -framework Cocoa -framework CoreGraphics -framework MetalKit 
 
-VPATH=./metal-cpp
+# VPATH=./metal-cpp
 
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -46,7 +46,7 @@ build/shaders.metallib: $(METAL_FILES)
 	xcrun -sdk macosx metal -frecord-sources=flat -o $@ $(METAL_FILES)
 
 build/main: $(OBJECTS) build/shaders.metallib Makefile
-	$(CC) $(CFLAGS) $(LDFLAGS) $(ALX_OBJECTS) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
 
 ### For future reference:
 #build/10-frame-debugging: $(APP_10FRAMEDEBUGGING_OBJECTS) Makefile
@@ -55,5 +55,5 @@ build/main: $(OBJECTS) build/shaders.metallib Makefile
 
 clean:
 	rm -f 
-		$(ALX_OBJECTS) \
-		build/*
+		$(OBJECTS) \
+		build/main
