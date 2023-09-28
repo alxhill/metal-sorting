@@ -20,6 +20,17 @@ AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )
 {
 }
 
+template <unsigned long p>
+unsigned long constexpr LongPower(const unsigned long x)
+{
+    if constexpr (p == 0) return 1;
+    if constexpr (p == 1) return x;
+
+    int tmp = LongPower<p / 2>(x);
+    if constexpr ((p % 2) == 0) { return tmp * tmp; }
+    else { return x * tmp * tmp; }
+}
+
 int main(int argc, char* argv[]) {
     NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
 
@@ -29,7 +40,8 @@ int main(int argc, char* argv[]) {
     // app->setDelegate(&del);
     // app->run();
 
-    std::vector<unsigned int> random_ints = generate_uints(1000000);
+    std::vector<unsigned int> random_ints = generate_uints(LongPower<34>(2));
+    std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
 
     time_func("stdlib sort", [&random_ints]() {
         sort_stdlib(random_ints);

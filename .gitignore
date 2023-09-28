@@ -2,3 +2,4 @@
 *.air
 *.metallib
 build/*
+.idea/*

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+TARGET = build/main
 SOURCES = $(shell find . -name '*.cpp' -or -name '*.mm')
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -49,6 +50,9 @@ build/shaders.metallib: $(METAL_FILES)
 
 build/main: $(OBJECTS) build/shaders.metallib Makefile
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
+
+run:
+	@./$(TARGET)
 
 ### For future reference:
 #build/10-frame-debugging: $(APP_10FRAMEDEBUGGING_OBJECTS) Makefile
