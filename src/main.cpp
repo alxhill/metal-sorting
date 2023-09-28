@@ -1,6 +1,7 @@
-#include <iostream>
-#include <simd/simd.h>
-#include ".cpp"
+#include "header.h"
+#include "macos/drawable.h"
+#include "macos/viewdelegate.h"
+#include "macos/appdelegate.h"
 
 class AlxRenderer : public Drawable
 {
