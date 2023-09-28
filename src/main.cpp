@@ -9,6 +9,10 @@
 #include "macos/appdelegate.h"
 #include "render/renderer.h"
 
+#include "sorting/generate.h"
+#include "sorting/time.h"
+#include "sorting/cpu/sort.h"
+
 // view delegate
 AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )
 : MTK::ViewDelegate()
@@ -19,11 +23,17 @@ AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )
 int main(int argc, char* argv[]) {
     NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
 
-    AlxAppDelegate del;
+    // AlxAppDelegate del;
 
-    NS::Application* app = NS::Application::sharedApplication();
-    app->setDelegate(&del);
-    app->run();
+    // NS::Application* app = NS::Application::sharedApplication();
+    // app->setDelegate(&del);
+    // app->run();
+
+    auto random_ints = generate_values<int>(1000000);
+
+    time_func("stdlib sort", [&random_ints]() {
+        sort_stdlib(random_ints);
+    });
 
     pool->release();
 
