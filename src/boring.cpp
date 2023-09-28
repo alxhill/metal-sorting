@@ -6,6 +6,8 @@
 #include <AppKit/AppKit.hpp>
 #include <MetalKit/MetalKit.hpp>
 
+// simple abstract class for the renderer so I
+// don't have to define it before the app delegate
 class Drawable {
     public:
         virtual void draw(MTK::View* pView) = 0;
