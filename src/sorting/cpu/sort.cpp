@@ -23,11 +23,12 @@ std::vector<unsigned int> sort_bitonic(std::vector<unsigned int> values) {
     return {};
 }
 
-void sort_radix_inplace_recur(std::vector<unsigned int>& values, int start, int end, unsigned int bitmask) {
-    if (bitmask == (0b1 << 3)) {
+void sort_radix_inplace_recur(std::vector<unsigned int> &values, const int start, const int end, unsigned int bitmask) {
+    if (bitmask == 0) {
         std::cout << "done sorting" << std::endl;
         return;
     }
+
     int leftBufferPos = start;
     int rightBufferPos = end;
 
@@ -35,7 +36,8 @@ void sort_radix_inplace_recur(std::vector<unsigned int>& values, int start, int 
         if ((values[leftBufferPos] & bitmask) == 0) {
             leftBufferPos++;
         } else {
-            std::swap(values[leftBufferPos], values[rightBufferPos--]);
+            std::swap(values[leftBufferPos], values[rightBufferPos]);
+            rightBufferPos--;
         }
     }
 
@@ -43,17 +45,36 @@ void sort_radix_inplace_recur(std::vector<unsigned int>& values, int start, int 
     std::cout << "left buffer: " << leftBufferPos << " right buffer: " << rightBufferPos << std::endl;
 
     std::cout << "ordered values:";
+    for (int i = 0; i < values.size(); i++) {
+        if (i == start) {
+            std::cout << "S";
+        }
+        std::cout << std::bitset<4>(values[i]);
+        if (i == leftBufferPos) {
+            std::cout << "|";
+        } else if (i == end) {
+            std::cout << "E";
+        } else {
+            std::cout << " ";
+        }
+    }
+    std::cout << std::endl;
+
+    if (leftBufferPos - start > 1) {
+        sort_radix_inplace_recur(values, start, leftBufferPos, bitmask >> 1);
+    }
+    if (end - leftBufferPos > 1) {
+        sort_radix_inplace_recur(values, leftBufferPos + 1, end, bitmask >> 1);
+    }
+}
+
+void sort_radix(std::vector<unsigned int>& values) {
+    std::cout << "initial values:";
     for (unsigned int i : values) {
         std::cout << std::bitset<4>(i) << " ";
     }
     std::cout << std::endl;
-
-    sort_radix_inplace_recur(values, start, leftBufferPos, bitmask << 1);
-    sort_radix_inplace_recur(values, leftBufferPos, end, bitmask << 1);
-}
-
-void sort_radix(std::vector<unsigned int>& values) {
-    sort_radix_inplace_recur(values, 0, values.size() - 1, 0b1);
+    sort_radix_inplace_recur(values, 0, values.size() - 1, 0b1000);
 }
 
 void sort_stdlib(std::vector<unsigned int>& values) {
