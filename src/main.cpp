@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     // app->setDelegate(&del);
     // app->run();
 
-    unsigned long count = (unsigned long) std::pow(2, 24);
+    unsigned long count = (unsigned long) std::pow(2, 4);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
@@ -49,11 +49,23 @@ int main(int argc, char* argv[]) {
 
     time_func("stdlib sort", [&random_ints]() {
         sort_stdlib(random_ints);
+        for (unsigned int i : random_ints) {
+            std::cout << i << ",";
+        }
+        std::cout << std::endl;
     });
 
-    time_func("stdlib sort", [&random_ints]() {
-        sort_radix(random_ints);
+    assert(random_ints != random_ints_2);
+
+    time_func("stdlib sort", [&random_ints_2]() {
+        sort_radix(random_ints_2);
+        for (unsigned int i : random_ints_2) {
+            std::cout << i << ",";
+        }
+        std::cout << std::endl;
     });
+
+    assert(random_ints == random_ints_2);
 
     pool->release();
 

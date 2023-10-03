@@ -6,7 +6,7 @@ std::vector<unsigned int> generate_uints(unsigned long count) {
     std::vector<unsigned int> random_numbers;
 
     std::uniform_int_distribution<unsigned int> distribution(
-        std::numeric_limits<unsigned int>::lowest(), std::numeric_limits<unsigned int>::max()
+        std::numeric_limits<unsigned int>::lowest(), 16
     );
     random_numbers.reserve(count);
 for (int i = 0; i < count; ++i) {
