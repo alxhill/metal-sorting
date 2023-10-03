@@ -51,7 +51,7 @@ build/shaders.metallib: $(METAL_FILES)
 build/main: $(OBJECTS) build/shaders.metallib Makefile
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
 
-run:
+run: build/main
 	@./$(TARGET)
 
 ### For future reference:

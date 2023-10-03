@@ -40,7 +40,9 @@ int main(int argc, char* argv[]) {
     // app->setDelegate(&del);
     // app->run();
 
-    std::vector<unsigned int> random_ints = generate_uints(LongPower<34>(2));
+    unsigned long count = (unsigned long) std::pow(2, 24);
+    std::cout << "Generating " << count << " random integers" << std::endl;
+    std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
 
     time_func("stdlib sort", [&random_ints]() {
