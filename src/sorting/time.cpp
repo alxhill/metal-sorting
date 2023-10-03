@@ -6,5 +6,5 @@ void time_func(const char* name, std::function<void()> func) {
     auto end = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << "Function execution time: " << duration << " microseconds" << std::endl;
+    std::cout << name << "() execution time: " << duration << " microseconds" << std::endl;
 }
