@@ -45,8 +45,14 @@ int main(int argc, char* argv[]) {
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
 
+    std::vector<unsigned int> random_ints_2 = random_ints;
+
     time_func("stdlib sort", [&random_ints]() {
         sort_stdlib(random_ints);
+    });
+
+    time_func("stdlib sort", [&random_ints]() {
+        sort_radix(random_ints);
     });
 
     pool->release();
