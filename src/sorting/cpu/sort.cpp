@@ -25,46 +25,38 @@ std::vector<unsigned int> sort_bitonic(std::vector<unsigned int> values) {
 
 void sort_radix_inplace_recur(std::vector<unsigned int> &values, const int start, const int end, unsigned int bitmask) {
     if (bitmask == 0) {
-        std::cout << "done sorting" << std::endl;
+        std::cout << "done sorting " << start << "-" << end << std::endl;
         return;
     }
 
-    int leftBufferPos = start;
-    int rightBufferPos = end;
+    std::cout << "sorting from " << start << "-" << end << std::endl;
 
-    while (leftBufferPos < rightBufferPos) {
-        if ((values[leftBufferPos] & bitmask) == 0) {
-            leftBufferPos++;
+    int zeroMark = start - 1;
+    int oneMark = end + 1;
+
+    while (zeroMark + 1 < oneMark) {
+        if ((values[zeroMark + 1] & bitmask) == 0) {
+            zeroMark++;
         } else {
-            std::swap(values[leftBufferPos], values[rightBufferPos]);
-            rightBufferPos--;
+            std::swap(values[zeroMark + 1], values[oneMark - 1]);
+            oneMark--;
         }
     }
 
     std::cout << "sorted with bitmask:" << std::bitset<4>(bitmask) << std::endl;
-    std::cout << "left buffer: " << leftBufferPos << " right buffer: " << rightBufferPos << std::endl;
+    std::cout << "zeroMark: " << zeroMark << " oneMark: " << oneMark << std::endl;
 
     std::cout << "ordered values:";
-    for (int i = 0; i < values.size(); i++) {
-        if (i == start) {
-            std::cout << "S";
-        }
-        std::cout << std::bitset<4>(values[i]);
-        if (i == leftBufferPos) {
-            std::cout << "|";
-        } else if (i == end) {
-            std::cout << "E";
-        } else {
-            std::cout << " ";
-        }
+    for (int i = start; i <= end; i++) {
+        std::cout << "[" << i << "]" << std::bitset<4>(values[i]) << " ";
     }
     std::cout << std::endl;
 
-    if (leftBufferPos - start > 1) {
-        sort_radix_inplace_recur(values, start, leftBufferPos, bitmask >> 1);
+    if (zeroMark - start > 0) {
+        sort_radix_inplace_recur(values, start, zeroMark, bitmask >> 1);
     }
-    if (end - leftBufferPos > 1) {
-        sort_radix_inplace_recur(values, leftBufferPos + 1, end, bitmask >> 1);
+    if (end - oneMark > 0) {
+        sort_radix_inplace_recur(values, oneMark, end, bitmask >> 1);
     }
 }
 
@@ -75,6 +67,11 @@ void sort_radix(std::vector<unsigned int>& values) {
     }
     std::cout << std::endl;
     sort_radix_inplace_recur(values, 0, values.size() - 1, 0b1000);
+    std::cout << "final values:";
+    for (unsigned int i : values) {
+        std::cout << std::bitset<4>(i) << " ";
+    }
+    std::cout << std::endl;
 }
 
 void sort_stdlib(std::vector<unsigned int>& values) {
