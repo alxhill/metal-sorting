@@ -7,12 +7,18 @@
 class GPUSort {
     public:
         explicit GPUSort(MTL::Device* device);
+        ~GPUSort();
 
-        std::vector<unsigned int> sort(std::vector<unsigned int>& data);
+        void prepare_data(std::vector<unsigned int>& data);
+        void compute_sort();
+        std::vector<unsigned int> get_data();
 
     private:
+        void init_shaders();
         MTL::Device* m_device;
+        MTL::ComputePipelineState* m_pso;
         MTL::CommandQueue* m_commmand_queue;
         MTL::Library* m_shader_library;
         MTL::Buffer* m_input_buffer;
+        MTL::Buffer* m_output_buffer;
 };
