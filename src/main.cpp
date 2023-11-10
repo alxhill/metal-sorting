@@ -1,3 +1,4 @@
+#include <algorithm>
 #define NS_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
 #define MTK_PRIVATE_IMPLEMENTATION
@@ -65,6 +66,8 @@ int main(int argc, char* argv[]) {
 
     assert(random_ints == random_ints_2);
 
+    std::vector<unsigned int> doubled_ints(random_ints_3.size());
+    std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
     time_func("sort_gpu", [&gpu_sort, &random_ints_3]() {
         std::cout << "preparing data" << std::endl;
         gpu_sort.prepare_data(random_ints_3);
@@ -74,7 +77,7 @@ int main(int argc, char* argv[]) {
         random_ints_3 = gpu_sort.get_data();
     });
 
-    assert(random_ints == random_ints_3);
+    assert(doubled_ints == random_ints_3);
 
     pool->release();
 
