@@ -3,3 +3,5 @@
 *.metallib
 build/*
 .idea/*
+
+.DS_Store
