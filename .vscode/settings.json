@@ -65,5 +65,15 @@
         "random": "cpp",
         "algorithm": "cpp"
     },
-    "C_Cpp.errorSquiggles": "enabled"
+    "C_Cpp.errorSquiggles": "enabled",
+    "clangd.arguments": [
+        "-I./metal-cpp",
+        " -I./metal-cpp-extensions",
+        "-fno-objc-arc",
+        "-framework Metal",
+        "-framework Foundation",
+        "-framework Cocoa",
+        "-framework CoreGraphics",
+        "-framework MetalKit"
+    ]
 }

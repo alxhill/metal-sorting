@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
     //  app->setDelegate(&del);
     //  app->run();
 
+    MTL::Device *device = MTL::CreateSystemDefaultDevice();
+
     auto count = (unsigned long) std::pow(2, 25);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
