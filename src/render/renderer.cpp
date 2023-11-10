@@ -125,7 +125,6 @@ void AlxRenderer::buildBuffers()
 
     pArgEncoder->setArgumentBuffer(_pArgBuffer, 0);
 
-    // crashes here :(
     pArgEncoder->setBuffer(_pPositions, 0, 0);
     pArgEncoder->setBuffer(_pColors, 0, 1);
 

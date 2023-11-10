@@ -15,10 +15,14 @@ class GPUSort {
 
     private:
         void init_shaders();
+        void encode_command(MTL::ComputeCommandEncoder *&encoder);
+
         MTL::Device* m_device;
         MTL::ComputePipelineState* m_pso;
         MTL::CommandQueue* m_commmand_queue;
         MTL::Library* m_shader_library;
         MTL::Buffer* m_input_buffer;
         MTL::Buffer* m_output_buffer;
+
+        int input_element_count;
 };
