@@ -23,7 +23,7 @@ std::vector<unsigned int> sort_bitonic(std::vector<unsigned int> values) {
     return {};
 }
 
-void sort_radix_inplace_recur(std::vector<unsigned int> &values, const int start, const int end, unsigned int bitmask) {
+void binary_radix_sort(std::vector<unsigned int> &values, const int start, const int end, unsigned int bitmask) {
     if (bitmask == 0) {
         return;
     }
@@ -41,15 +41,15 @@ void sort_radix_inplace_recur(std::vector<unsigned int> &values, const int start
     }
 
     if (zeroMark - start > 0) {
-        sort_radix_inplace_recur(values, start, zeroMark, bitmask >> 1);
+        binary_radix_sort(values, start, zeroMark, bitmask >> 1);
     }
     if (end - oneMark > 0) {
-        sort_radix_inplace_recur(values, oneMark, end, bitmask >> 1);
+        binary_radix_sort(values, oneMark, end, bitmask >> 1);
     }
 }
 
 void sort_radix(std::vector<unsigned int>& values) {
-    sort_radix_inplace_recur(values, 0, values.size() - 1, 0b1 << 31);
+    binary_radix_sort(values, 0, values.size() - 1, 0b1 << 31);
 }
 
 void sort_stdlib(std::vector<unsigned int>& values) {

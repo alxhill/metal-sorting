@@ -3,7 +3,7 @@
 // renderer
 struct FrameData
 {
-    float angle;
+    [[maybe_unused]] float angle;
 };
 
 const int FramesInFlight = 3;

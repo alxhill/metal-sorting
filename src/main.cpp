@@ -34,11 +34,11 @@ unsigned long constexpr LongPower(const unsigned long x)
 int main(int argc, char* argv[]) {
     NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
 
-    // AlxAppDelegate del;
+    //  AlxAppDelegate del;
 
-    // NS::Application* app = NS::Application::sharedApplication();
-    // app->setDelegate(&del);
-    // app->run();
+    //  NS::Application* app = NS::Application::sharedApplication();
+    //  app->setDelegate(&del);
+    //  app->run();
 
     auto count = (unsigned long) std::pow(2, 25);
     std::cout << "Generating " << count << " random integers" << std::endl;
