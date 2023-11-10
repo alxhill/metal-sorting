@@ -48,16 +48,14 @@ void GPUSort::encode_command(MTL::ComputeCommandEncoder *&encoder) {
 
     std::cout << "Encoded buffers" << std::endl;
 
-    MTL::Size grid_size = MTL::Size(input_element_count, 1, 1);
+    // process the data in chunks of 64
+    MTL::Size grid_size = MTL::Size(64, 1, 1);
 
-    std::cout << "created grid with size " << input_element_count << std::endl;
+    std::cout << "created grid with size " << 64 << std::endl;
 
-    int thread_group_count = m_pso->maxTotalThreadsPerThreadgroup();
-    if (thread_group_count > input_element_count) {
-      thread_group_count = input_element_count;
-    }
-    MTL::Size thread_group_size = MTL::Size(thread_group_count, 1, 1);
-    std::cout << "created threadgroup with size " << thread_group_count << std::endl;
+    int threads_per_group = (input_element_count + 63) / 64;
+    MTL::Size thread_group_size = MTL::Size(threads_per_group, 1, 1);
+    std::cout << "created threadgroup with size " << threads_per_group << std::endl;
 
     std::cout << "Dispatching threads" << std::endl;
     encoder->dispatchThreads(grid_size, thread_group_size);

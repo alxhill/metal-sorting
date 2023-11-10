@@ -3,6 +3,6 @@
 
 std::vector<unsigned int> sort_bitonic(std::vector<unsigned int> values);
 
-void sort_radix(std::vector<unsigned int>& values);
+std::vector<unsigned int> sort_radix(const std::vector<unsigned int>& values);
 
-void sort_stdlib(std::vector<unsigned int>& values);
+std::vector<unsigned int> sort_stdlib(const std::vector<unsigned int>& values);

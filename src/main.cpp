@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
 
     GPUSort gpu_sort(device);
 
-    auto count = (unsigned long) std::pow(2, 10);
+    auto count = (unsigned long) std::pow(2, 20);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
@@ -55,13 +55,13 @@ int main(int argc, char* argv[]) {
     std::vector<unsigned int> random_ints_3 = random_ints;
 
     time_func("std::sort", [&random_ints]() {
-        sort_stdlib(random_ints);
+        random_ints = sort_stdlib(random_ints);
     });
 
     assert(random_ints != random_ints_2);
 
     time_func("sort_radix", [&random_ints_2]() {
-        sort_radix(random_ints_2);
+        random_ints_2 = sort_radix(random_ints_2);
     });
 
     assert(random_ints == random_ints_2);

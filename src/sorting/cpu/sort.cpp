@@ -2,15 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
-void check_power_of_2(std::vector<unsigned int> values) {
-    int i = values.size();
-    while (i % 2 == 0) {
-        i = i/2;
-    }
-    if (i != 1) {
-        throw std::runtime_error("values must be a power of 2");
-    }
-}
+void binary_radix_sort(std::vector<unsigned int> &values, const int start, const int end, unsigned int bitmask);
+void check_power_of_2(std::vector<unsigned int> values);
 
 std::vector<unsigned int> sort_bitonic(std::vector<unsigned int> values) {
     if (values.size() == 1) {
@@ -20,7 +13,20 @@ std::vector<unsigned int> sort_bitonic(std::vector<unsigned int> values) {
 
     std::vector<unsigned int> left(values.begin(), values.begin() + values.size() / 2);
 
+    // unfinished
     return {};
+}
+
+std::vector<unsigned int> sort_radix(const std::vector<unsigned int>& values) {
+    std::vector<unsigned int> copy(values);
+    binary_radix_sort(copy, 0, copy.size() - 1, 0b1 << 31);
+    return copy;
+}
+
+std::vector<unsigned int> sort_stdlib(const std::vector<unsigned int>& values) {
+    std::vector<unsigned int> copy(values);
+    std::sort(copy.begin(), copy.end());
+    return copy;
 }
 
 void binary_radix_sort(std::vector<unsigned int> &values, const int start, const int end, unsigned int bitmask) {
@@ -48,10 +54,12 @@ void binary_radix_sort(std::vector<unsigned int> &values, const int start, const
     }
 }
 
-void sort_radix(std::vector<unsigned int>& values) {
-    binary_radix_sort(values, 0, values.size() - 1, 0b1 << 31);
-}
-
-void sort_stdlib(std::vector<unsigned int>& values) {
-    std::sort(values.begin(), values.end());
+void check_power_of_2(std::vector<unsigned int> values) {
+    int i = values.size();
+    while (i % 2 == 0) {
+        i = i/2;
+    }
+    if (i != 1) {
+        throw std::runtime_error("values must be a power of 2");
+    }
 }
