@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../header.h"
+#include "../header.hpp"
 #include "viewdelegate.h"
 
 class AlxAppDelegate : public NS::ApplicationDelegate

@@ -3,7 +3,7 @@
 #define MTK_PRIVATE_IMPLEMENTATION
 #define CA_PRIVATE_IMPLEMENTATION
 
-#include "header.h"
+#include "header.hpp"
 #include "macos/drawable.h"
 #include "macos/viewdelegate.h"
 #include "macos/appdelegate.h"

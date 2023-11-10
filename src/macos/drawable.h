@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../header.h"
+#include "../header.hpp"
 
 // simple abstract class for the renderer so I
 // don't have to define it before the app delegate

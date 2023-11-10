@@ -14,7 +14,9 @@
 
 TARGET = build/main
 SOURCES = $(shell find . -name '*.cpp' -or -name '*.mm')
-OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS_CPP = $(SOURCES:.cpp=.o)
+OBJECTS_MM = $(OBJECTS_CPP:.mm=.o)
+OBJECTS = $(OBJECTS_MM) $(OBJECTS_CPP)
 
 METAL_FILES := $(wildcard src/metal/*.metal)
 

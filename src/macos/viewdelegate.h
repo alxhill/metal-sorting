@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../header.h"
+#include "../header.hpp"
 #include "drawable.h"
 
 class AlxMTKViewDelegate: public MTK::ViewDelegate

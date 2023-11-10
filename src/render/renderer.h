@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../header.h"
+#include "../header.hpp"
 #include "../macos/drawable.h"
 
 class AlxRenderer : public Drawable
