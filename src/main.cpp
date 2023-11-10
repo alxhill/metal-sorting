@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
         random_ints_3 = gpu_sort.get_data();
     });
 
-    assert(random_ints == random_ints_2);
+    assert(random_ints == random_ints_3);
 
     pool->release();
 
