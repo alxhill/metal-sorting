@@ -1,5 +1,7 @@
 #include "gpusort.hpp"
+#include "Foundation/NSString.hpp"
 
+NS::String *FUNC_NAME = MTLSTR("double_value_block");
 
 GPUSort::GPUSort(MTL::Device* device) : m_device(device->retain()) {
     init_shaders();
@@ -53,6 +55,7 @@ void GPUSort::encode_command(MTL::ComputeCommandEncoder *&encoder) {
 
     std::cout << "created grid with size " << 64 << std::endl;
 
+
     int threads_per_group = (input_element_count + 63) / 64;
     MTL::Size thread_group_size = MTL::Size(threads_per_group, 1, 1);
     std::cout << "created threadgroup with size " << threads_per_group << std::endl;
@@ -85,7 +88,7 @@ void GPUSort::init_shaders() {
         assert(false);
     }
 
-    MTL::Function* sort_func = library->newFunction(MTLSTR("double_value"));
+    MTL::Function* sort_func = library->newFunction(FUNC_NAME);
 
     m_pso = m_device->newComputePipelineState(sort_func, &error);
     
