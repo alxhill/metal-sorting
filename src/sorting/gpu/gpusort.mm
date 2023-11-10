@@ -18,13 +18,17 @@ void GPUSort::compute_sort() {
     MTL::CommandBuffer *cmd_buffer = m_commmand_queue->commandBuffer();
     MTL::ComputeCommandEncoder *encoder = cmd_buffer->computeCommandEncoder();
 
+    std::cout << "Encoding command" << std::endl;
     encode_command(encoder);
 
+    std::cout << "Committing" << std::endl;
     encoder->endEncoding();
     cmd_buffer->commit();
 
     // this blocks until the GPU is done
+    std::cout << "Waiting for completion" << std::endl;
     cmd_buffer->waitUntilCompleted();
+    std::cout << "Execution finished" << std::endl;
 }
 
 std::vector<unsigned int> GPUSort::get_data() {
@@ -42,14 +46,20 @@ void GPUSort::encode_command(MTL::ComputeCommandEncoder *&encoder) {
     encoder->setBuffer(m_input_buffer, 0, 0);
     encoder->setBuffer(m_output_buffer, 0, 1);
 
+    std::cout << "Encoded buffers" << std::endl;
+
     MTL::Size grid_size = MTL::Size(input_element_count, 1, 1);
+
+    std::cout << "created grid with size " << input_element_count << std::endl;
 
     int thread_group_count = m_pso->maxTotalThreadsPerThreadgroup();
     if (thread_group_count > input_element_count) {
       thread_group_count = input_element_count;
     }
     MTL::Size thread_group_size = MTL::Size(thread_group_count, 1, 1);
+    std::cout << "created threadgroup with size " << thread_group_count << std::endl;
 
+    std::cout << "Dispatching threads" << std::endl;
     encoder->dispatchThreads(grid_size, thread_group_size);
 }
 
@@ -79,7 +89,7 @@ void GPUSort::init_shaders() {
 
     MTL::Function* sort_func = library->newFunction(MTLSTR("double_value"));
 
-    MTL::ComputePipelineState* m_pso = m_device->newComputePipelineState(sort_func, &error);
+    m_pso = m_device->newComputePipelineState(sort_func, &error);
     
     if (!m_pso) {
         __builtin_printf("%s", error->localizedDescription()->utf8String());

@@ -66,8 +66,11 @@ int main(int argc, char* argv[]) {
     assert(random_ints == random_ints_2);
 
     time_func("sort_gpu", [&gpu_sort, &random_ints_3]() {
+        std::cout << "preparing data" << std::endl;
         gpu_sort.prepare_data(random_ints_3);
+        std::cout << "running sort func" << std::endl;
         gpu_sort.compute_sort();
+        std::cout << "returning data" << std::endl;
         random_ints_3 = gpu_sort.get_data();
     });
 
