@@ -12,6 +12,7 @@
 #include "sorting/generate.h"
 #include "sorting/time.h"
 #include "sorting/cpu/sort.h"
+#include "sorting/gpu/gpusort.hpp"
 
 // view delegate
 AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )
@@ -42,12 +43,15 @@ int main(int argc, char* argv[]) {
 
     MTL::Device *device = MTL::CreateSystemDefaultDevice();
 
-    auto count = (unsigned long) std::pow(2, 25);
+    GPUSort gpu_sort(device);
+
+    auto count = (unsigned long) std::pow(2, 10);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
 
     std::vector<unsigned int> random_ints_2 = random_ints;
+    std::vector<unsigned int> random_ints_3 = random_ints;
 
     time_func("std::sort", [&random_ints]() {
         sort_stdlib(random_ints);
@@ -57,6 +61,14 @@ int main(int argc, char* argv[]) {
 
     time_func("sort_radix", [&random_ints_2]() {
         sort_radix(random_ints_2);
+    });
+
+    assert(random_ints == random_ints_2);
+
+    time_func("sort_gpu", [&gpu_sort, &random_ints_3]() {
+        gpu_sort.prepare_data(random_ints_3);
+        gpu_sort.compute_sort();
+        random_ints_3 = gpu_sort.get_data();
     });
 
     assert(random_ints == random_ints_2);

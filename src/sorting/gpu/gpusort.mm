@@ -1,12 +1,5 @@
 #include "gpusort.hpp"
-#include "Foundation/NSString.hpp"
-#include "Metal/MTLCommandBuffer.hpp"
-#include "Metal/MTLRenderPipeline.hpp"
-#include "Metal/MTLTypes.hpp"
-#include <cstddef>
-#include <cstring>
 
-using namespace NS;
 
 GPUSort::GPUSort(MTL::Device* device) : m_device(device->retain()) {
     init_shaders();
@@ -20,7 +13,6 @@ GPUSort::~GPUSort() {
     m_commmand_queue->release();
     m_device->release();
 }
-
 
 void GPUSort::compute_sort() {
     MTL::CommandBuffer *cmd_buffer = m_commmand_queue->commandBuffer();
@@ -68,16 +60,16 @@ void GPUSort::prepare_data(std::vector<unsigned int> &data) {
     m_output_buffer = m_device->newBuffer(buffer_size, MTL::ResourceStorageModeShared);
 
     memcpy(m_input_buffer->contents(), data.data(), buffer_size);
-    m_input_buffer->didModifyRange(Range(0, buffer_size));
+    m_input_buffer->didModifyRange(NS::Range(0, buffer_size));
 
     input_element_count = data.size();
 }
 
 void GPUSort::init_shaders() {
-    Error* error = nullptr;
+    NS::Error* error = nullptr;
 
-    Bundle* bundle = Bundle::mainBundle();
-    URL* libUrl = bundle->URLForAuxiliaryExecutable(MTLSTR("shaders.metallib"));
+    NS::Bundle* bundle = NS::Bundle::mainBundle();
+    NS::URL* libUrl = bundle->URLForAuxiliaryExecutable(MTLSTR("shaders.metallib"));
     MTL::Library* library = m_device->newLibrary(libUrl, &error);
 
     if (!library) {
