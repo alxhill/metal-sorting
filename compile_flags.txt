@@ -1,0 +1,3 @@
+-I./metal-cpp
+-I./metal-cpp-extensions
+-fno-objc-arc
