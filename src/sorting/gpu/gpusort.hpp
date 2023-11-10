@@ -15,5 +15,4 @@ class GPUSort {
         MTL::CommandQueue* m_commmand_queue;
         MTL::Library* m_shader_library;
         MTL::Buffer* m_input_buffer;
-
 };

@@ -15,7 +15,7 @@
 TARGET = build/main
 SOURCES = $(shell find . -name '*.cpp' -or -name '*.mm')
 OBJECTS_CPP = $(SOURCES:.cpp=.o)
-OBJECTS_MM = $(OBJECTS_CPP:.mm=.o)
+OBJECTS_MM = $(SOURCES:.mm=.o)
 OBJECTS = $(OBJECTS_MM) $(OBJECTS_CPP)
 
 METAL_FILES := $(wildcard src/metal/*.metal)
@@ -35,7 +35,7 @@ endif
 
 CC=clang++
 CFLAGS=-Wall -std=c++17 -I./metal-cpp -I./metal-cpp-extensions -fno-objc-arc $(DBG_OPT_FLAGS) $(ASAN_FLAGS)
-LDFLAGS=-framework Metal -framework Foundation -framework Cocoa -framework CoreGraphics -framework MetalKit 
+LDFLAGS=-framework Metal -framework Foundation -framework Cocoa -framework CoreGraphics -framework MetalKit -v
 
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) $< -o $@
