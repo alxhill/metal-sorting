@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
 
     GPUSort gpu_sort(device);
 
-    auto count = (unsigned long) std::pow(2, 20);
+    auto count = (unsigned long) std::pow(2, 22);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
@@ -72,14 +72,14 @@ int main(int argc, char* argv[]) {
         std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
     });
 
-    time_func("double", [&gpu_sort, &random_ints_3]() {
-        std::cout << "preparing data" << std::endl;
-        gpu_sort.prepare_data(random_ints_3);
+    gpu_sort.prepare_data(random_ints_3);
+
+    time_func("double_gpu", [&gpu_sort]() {
         std::cout << "running sort func" << std::endl;
         gpu_sort.compute_sort();
-        std::cout << "returning data" << std::endl;
-        random_ints_3 = gpu_sort.get_data();
     });
+
+    random_ints_3 = gpu_sort.get_data();
 
     assert(doubled_ints == random_ints_3);
 
