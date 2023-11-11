@@ -7,9 +7,7 @@
 
 MTL::Library *GPUFunc::s_library = nullptr;
 
-GPUFunc::GPUFunc(MTL::Device* device) : m_device(device->retain()) {
-    init_shaders();
-}
+GPUFunc::GPUFunc(MTL::Device* device) : m_device(device->retain()) {}
 
 GPUFunc::~GPUFunc() {
     m_data_buffer->release();
@@ -43,6 +41,8 @@ std::vector<unsigned int> GPUFunc::get_data() {
 
 
 void GPUFunc::prepare_data(std::vector<unsigned int> &data) {
+    init_shaders();
+
     auto buffer_size = data.size() * sizeof(unsigned int);
     m_data_buffer =
         m_device->newBuffer(buffer_size, MTL::ResourceStorageModeShared);

@@ -24,6 +24,12 @@ kernel void double_value_64(device unsigned int* data, uint index [[thread_posit
     }
 }
 
+kernel void double_value_128(device unsigned int* data, uint index [[thread_position_in_grid]]) {
+    for (int i = 0; i < 128; i++) {
+        data[index*128+i] = data[index*128+i] * 2;
+    }
+}
+
 // same as above but does 64 elements at a time
 kernel void double_value_block(
     device const unsigned int* input,

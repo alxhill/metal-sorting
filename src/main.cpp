@@ -45,8 +45,8 @@ int main(int argc, char* argv[]) {
 
     GPUFuncDouble gpu_double(device, MTLSTR("double_value"), 1);
     GPUFuncDouble gpu_double_2(device, MTLSTR("double_value_pair"), 2);
-    GPUFuncDouble gpu_double_8(device, MTLSTR("double_value_eight"), 8);
     GPUFuncDouble gpu_double_64(device, MTLSTR("double_value_64"), 64);
+    GPUFuncDouble gpu_double_128(device, MTLSTR("double_value_128"), 128);
 
     auto count = (unsigned long) std::pow(2, 20);
     std::cout << "Generating " << count << " random integers" << std::endl;
@@ -75,13 +75,30 @@ int main(int argc, char* argv[]) {
     });
 
     gpu_double.prepare_data(random_ints_3);
+    gpu_double_2.prepare_data(random_ints_3);
+    gpu_double_64.prepare_data(random_ints_3);
+    gpu_double_128.prepare_data(random_ints_3);
 
-    time_func("double_gpu", [&gpu_double]() {
+    time_func("double_gpu_1", [&gpu_double]() {
         gpu_double.execute();
+    });
+    time_func("double_gpu_2", [&gpu_double_2]() {
+        gpu_double_2.execute();
+    });
+    time_func("double_gpu_64", [&gpu_double_64]() {
+        gpu_double_64.execute();
+    });
+    time_func("double_gpu_128", [&gpu_double_128]() {
+        gpu_double_128.execute();
     });
 
     random_ints_3 = gpu_double.get_data();
-
+    assert(doubled_ints == random_ints_3);
+    random_ints_3 = gpu_double_2.get_data();
+    assert(doubled_ints == random_ints_3);
+    random_ints_3 = gpu_double_64.get_data();
+    assert(doubled_ints == random_ints_3);
+    random_ints_3 = gpu_double_128.get_data();
     assert(doubled_ints == random_ints_3);
 
     pool->release();
