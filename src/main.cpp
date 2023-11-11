@@ -44,9 +44,9 @@ int main(int argc, char* argv[]) {
 
     MTL::Device *device = MTL::CreateSystemDefaultDevice();
 
-    GPUSort gpu_sort(device);
+    GPUFunc gpu_sort(device);
 
-    auto count = (unsigned long) std::pow(2, 24);
+    auto count = (unsigned long) std::pow(2, 20);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
     gpu_sort.prepare_data(random_ints_3);
 
     time_func("double_gpu", [&gpu_sort]() {
-        gpu_sort.compute_sort();
+        gpu_sort.execute_func();
     });
 
     random_ints_3 = gpu_sort.get_data();
