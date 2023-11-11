@@ -1,4 +1,3 @@
-#include <algorithm>
 #define NS_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
 #define MTK_PRIVATE_IMPLEMENTATION
@@ -44,7 +43,10 @@ int main(int argc, char* argv[]) {
 
     MTL::Device *device = MTL::CreateSystemDefaultDevice();
 
-    GPUFunc gpu_sort(device);
+    GPUFuncDouble gpu_double(device, MTLSTR("double_value"), 1);
+    GPUFuncDouble gpu_double_2(device, MTLSTR("double_value_pair"), 2);
+    GPUFuncDouble gpu_double_8(device, MTLSTR("double_value_eight"), 8);
+    GPUFuncDouble gpu_double_64(device, MTLSTR("double_value_64"), 64);
 
     auto count = (unsigned long) std::pow(2, 20);
     std::cout << "Generating " << count << " random integers" << std::endl;
@@ -72,13 +74,13 @@ int main(int argc, char* argv[]) {
         std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
     });
 
-    gpu_sort.prepare_data(random_ints_3);
+    gpu_double.prepare_data(random_ints_3);
 
-    time_func("double_gpu", [&gpu_sort]() {
-        gpu_sort.execute_func();
+    time_func("double_gpu", [&gpu_double]() {
+        gpu_double.execute();
     });
 
-    random_ints_3 = gpu_sort.get_data();
+    random_ints_3 = gpu_double.get_data();
 
     assert(doubled_ints == random_ints_3);
 

@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <memory>
 
+MTL::Library *GPUFunc::s_library = nullptr;
+
 GPUFunc::GPUFunc(MTL::Device* device) : m_device(device->retain()) {
     init_shaders();
 }
@@ -81,6 +83,10 @@ void GPUFunc::init_shaders() {
 // value doubler impl
 GPUFuncDouble::GPUFuncDouble(MTL::Device* device, NS::String* function_name, int elements_per_thread) :
     GPUFunc(device), m_elements_per_thread(elements_per_thread), m_function_name(function_name) {}
+
+GPUFuncDouble::~GPUFuncDouble() {
+    m_function_name->release();
+}
 
 MTL::Function* GPUFuncDouble::get_function(MTL::Library& library) {
     return library.newFunction(m_function_name);
