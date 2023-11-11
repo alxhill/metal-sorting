@@ -1,7 +1,8 @@
 #include "gpusort.hpp"
 #include "Foundation/NSString.hpp"
+#include <algorithm>
 
-NS::String *FUNC_NAME = MTLSTR("double_value_block");
+NS::String *FUNC_NAME = MTLSTR("double_value");
 
 GPUSort::GPUSort(MTL::Device* device) : m_device(device->retain()) {
     init_shaders();
@@ -55,8 +56,7 @@ void GPUSort::encode_command(MTL::ComputeCommandEncoder *&encoder) {
 
     std::cout << "created grid with size " << 64 << std::endl;
 
-
-    int threads_per_group = (input_element_count + 63) / 64;
+    int threads_per_group = std::max(input_element_count, (int) m_pso->maxTotalThreadsPerThreadgroup());
     MTL::Size thread_group_size = MTL::Size(threads_per_group, 1, 1);
     std::cout << "created threadgroup with size " << threads_per_group << std::endl;
 
