@@ -6,6 +6,12 @@ kernel void double_value(device const unsigned int* input, device unsigned int* 
     output[index] = input[index] * 2;
 }
 
+kernel void double_value_pair(device const unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
+{
+    output[index*2] = input[index*2] * 2;
+    output[index*2+1] = input[index*2+1] * 2;
+}
+
 // same as above but does 64 elements at a time
 kernel void double_value_block(
     device const unsigned int* input,

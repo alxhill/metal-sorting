@@ -67,8 +67,12 @@ int main(int argc, char* argv[]) {
     assert(random_ints == random_ints_2);
 
     std::vector<unsigned int> doubled_ints(random_ints_3.size());
-    std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
-    time_func("sort_gpu", [&gpu_sort, &random_ints_3]() {
+
+    time_func("double_cpu", [&random_ints_3, &doubled_ints]() {
+        std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
+    });
+
+    time_func("double", [&gpu_sort, &random_ints_3]() {
         std::cout << "preparing data" << std::endl;
         gpu_sort.prepare_data(random_ints_3);
         std::cout << "running sort func" << std::endl;
