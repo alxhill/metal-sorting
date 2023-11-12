@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gpufunc.hpp"
+#include "gpufunc.h"
 
 class GPUFuncDouble : public GPUFunc {
     public:

@@ -1,4 +1,4 @@
-#include "gpufunc.hpp"
+#include "gpufunc.h"
 #include "Foundation/NSString.hpp"
 #include "Metal/MTLLibrary.hpp"
 #include "Metal/MTLResource.hpp"
@@ -46,7 +46,6 @@ void GPUFunc::prepare_data(std::vector<unsigned int> &data) {
     auto buffer_size = data.size() * sizeof(unsigned int);
     m_data_buffer =
         m_device->newBuffer(buffer_size, MTL::ResourceStorageModeShared);
-    // m_output_buffer = m_device->newBuffer(buffer_size, MTL::ResourceStorageModeShared);
 
     memcpy(m_data_buffer->contents(), data.data(), buffer_size);
     m_data_buffer->didModifyRange(NS::Range(0, buffer_size));
@@ -79,4 +78,3 @@ void GPUFunc::init_shaders() {
 
     m_commmand_queue = m_device->newCommandQueue();
 }
-

@@ -12,7 +12,7 @@
 #include "sorting/generate.h"
 #include "sorting/time.h"
 #include "sorting/cpu/sort.h"
-#include "sorting/gpu/gpu.hpp"
+#include "sorting/gpu/gpu.h"
 
 // view delegate
 AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )

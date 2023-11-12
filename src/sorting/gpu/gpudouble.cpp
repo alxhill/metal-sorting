@@ -1,4 +1,4 @@
-#include "gpudouble.hpp"
+#include "gpudouble.h"
 
 GPUFuncDouble::GPUFuncDouble(MTL::Device* device, NS::String* function_name, int elements_per_thread) :
     GPUFunc(device), m_elements_per_thread(elements_per_thread), m_function_name(function_name) {}
