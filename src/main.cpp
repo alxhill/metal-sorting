@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     GPUSortSlow gpu_sort_even(device, true);
     GPUSortSlow gpu_sort_odd(device, false);
 
-    auto count = (unsigned long) std::pow(2, 5);
+    auto count = (unsigned long) std::pow(2, 16);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;

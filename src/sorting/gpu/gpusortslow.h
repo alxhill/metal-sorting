@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Metal/MTLBuffer.hpp"
 #include "gpufunc.h"
 
 class GPUSortSlow : public GPUFunc {

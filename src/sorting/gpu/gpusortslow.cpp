@@ -1,5 +1,4 @@
 #include "gpusortslow.h"
-#include "Metal/MTLTypes.hpp"
 #include <vector>
 
 GPUSortSlow::GPUSortSlow(MTL::Device* device, bool even_pass) : GPUFunc(device), m_even_pass(even_pass) {}
