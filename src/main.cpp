@@ -12,7 +12,7 @@
 #include "sorting/generate.h"
 #include "sorting/time.h"
 #include "sorting/cpu/sort.h"
-#include "sorting/gpu/gpusort.hpp"
+#include "sorting/gpu/gpu.hpp"
 
 // view delegate
 AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )
@@ -21,22 +21,10 @@ AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )
 {
 }
 
-template <unsigned long p>
-unsigned long constexpr LongPower(const unsigned long x)
-{
-    if constexpr (p == 0) return 1;
-    if constexpr (p == 1) return x;
-
-    int tmp = LongPower<p / 2>(x);
-    if constexpr ((p % 2) == 0) { return tmp * tmp; }
-    else { return x * tmp * tmp; }
-}
-
 int main(int argc, char* argv[]) {
     NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
 
     //  AlxAppDelegate del;
-
     //  NS::Application* app = NS::Application::sharedApplication();
     //  app->setDelegate(&del);
     //  app->run();
