@@ -22,7 +22,6 @@ class GPUFunc {
         MTL::Device* m_device;
         MTL::ComputePipelineState* m_pso;
         MTL::CommandQueue* m_commmand_queue;
-        // MTL::Buffer* m_data_buffer;
 
         int input_element_count;
 

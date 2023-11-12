@@ -2,21 +2,30 @@
 
 #include "gpufunc.h"
 
-class GPUSortSlow : public GPUFunc {
+class GPUSortSlow {
     public:
-        explicit GPUSortSlow(MTL::Device* device, bool even_pass);
+        explicit GPUSortSlow(MTL::Device* device);
         ~GPUSortSlow();
 
-        // only one of these should be called
-        MTL::Buffer* put_data(std::vector<unsigned int>& data);
-        void put_buffer(MTL::Buffer* buffer, int element_count);
+        void init_with_data(std::vector<unsigned int>& data);
 
-        std::vector<unsigned int> get_data() override;
+        void execute_pass();
+
+        std::vector<unsigned int> get_data();
 
     protected:
-        void encode_command(MTL::ComputeCommandEncoder *&encoder) override;
-        MTL::Function* get_function(MTL::Library& library) override;
+        void encode_command(MTL::ComputeCommandEncoder *&encoder);
     private: 
-        bool m_even_pass;
+        void init_shaders();
+
+        MTL::Device* m_device;
+        MTL::ComputePipelineState* m_even_kernel;
+        MTL::ComputePipelineState* m_odd_kernel;
+        MTL::CommandQueue* m_commmand_queue;
+
         MTL::Buffer* m_data_buffer;
+
+        int input_element_count;
+
+        static MTL::Library* s_library;
 };

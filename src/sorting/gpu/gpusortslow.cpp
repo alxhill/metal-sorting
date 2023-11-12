@@ -1,21 +1,16 @@
 #include "gpusortslow.h"
 #include <vector>
 
-GPUSortSlow::GPUSortSlow(MTL::Device* device, bool even_pass) : GPUFunc(device), m_even_pass(even_pass) {}
+#define NSASSERT(x, err) { if (!(x)) { __builtin_printf("Assertion failed: %s\n", err->localizedDescription()->utf8String()); assert(false); } }
+
+GPUSortSlow::GPUSortSlow(MTL::Device* device) {
+    m_device = device->retain();
+}
 
 GPUSortSlow::~GPUSortSlow() {}
 
-void GPUSortSlow::put_buffer(MTL::Buffer* buffer, int element_count) {
-    init_shaders();
-    if (m_data_buffer != nullptr) {
-        std::cout << "GPUSortSlow::put_buffer: m_data_buffer is not null" << std::endl;
-        assert(false);
-    }
-    m_data_buffer = buffer;
-    input_element_count = element_count;
-}
 
-MTL::Buffer* GPUSortSlow::put_data(std::vector<unsigned int>& data) {
+void GPUSortSlow::init_with_data(std::vector<unsigned int>& data) {
     init_shaders();
     auto buffer_size = data.size() * sizeof(unsigned int);
     m_data_buffer = m_device->newBuffer(buffer_size, MTL::ResourceStorageModeShared);
@@ -24,8 +19,6 @@ MTL::Buffer* GPUSortSlow::put_data(std::vector<unsigned int>& data) {
     m_data_buffer->didModifyRange(NS::Range(0, buffer_size));
 
     input_element_count = data.size();
-
-    return m_data_buffer;
 }
 
 std::vector<unsigned int> GPUSortSlow::get_data() {
@@ -53,9 +46,25 @@ void GPUSortSlow::encode_command(MTL::ComputeCommandEncoder *&encoder) {
     encoder->dispatchThreads(grid_size, thread_group_size); 
 }
 
-MTL::Function *GPUSortSlow::get_function(MTL::Library &library) {
-    if (m_even_pass) {
-        return library.newFunction(MTLSTR("slow_sort_even"));
+void GPUSortSlow::init_shaders() {
+    NS::Error* error = nullptr;
+
+    if (s_library == nullptr) {
+        NS::Bundle* bundle = NS::Bundle::mainBundle();
+        NS::URL* libUrl = bundle->URLForAuxiliaryExecutable(MTLSTR("shaders.metallib"));
+        s_library = m_device->newLibrary(libUrl, &error);
     }
-    return library.newFunction(MTLSTR("slow_sort_odd"));
+
+    NSASSERT(s_library, error);
+
+    MTL::Function* even_pass_func = s_library->newFunction(MTLSTR("slow_sort_even"));
+    MTL::Function* odd_pass_func = s_library->newFunction(MTLSTR("slow_sort_odd"));
+
+    m_even_kernel = m_device->newComputePipelineState(even_pass_func, &error);
+    m_odd_kernel = m_device->newComputePipelineState(odd_pass_func, &error);
+
+    NSASSERT(m_even_kernel, error);
+    NSASSERT(m_odd_kernel, error);
+
+    m_commmand_queue = m_device->newCommandQueue();
 }
