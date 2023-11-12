@@ -66,5 +66,12 @@
         "algorithm": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled",
-    "clangd.arguments": []
+    "clangd.arguments": [],
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/alxhill/dev/metal/metal-sorting/build",
+            "binaryPath": "/Users/alxhill/dev/metal/metal-sorting/build/main",
+            "binaryArgs": []
+        }
+    ]
 }

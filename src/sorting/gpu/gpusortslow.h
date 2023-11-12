@@ -10,7 +10,7 @@ class GPUSortSlow : public GPUFunc {
 
         // only one of these should be called
         MTL::Buffer* put_data(std::vector<unsigned int>& data);
-        void put_buffer(MTL::Buffer* buffer);
+        void put_buffer(MTL::Buffer* buffer, int element_count);
 
     protected:
         void encode_command(MTL::ComputeCommandEncoder *&encoder) override;

@@ -37,7 +37,6 @@ std::vector<unsigned int> GPUFunc::get_data() {
 }
 
 
-
 void GPUFunc::init_shaders() {
     NS::Error* error = nullptr;
 

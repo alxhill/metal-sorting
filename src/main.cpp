@@ -22,6 +22,13 @@ AlxMTKViewDelegate::AlxMTKViewDelegate( MTL::Device* pDevice )
 {
 }
 
+void print_vector(std::vector<unsigned int>& values) {
+    for (auto value : values) {
+        std::cout << value << ",";
+    }
+    std::cout << std::endl;
+}
+
 int main(int argc, char* argv[]) {
     NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
 
@@ -37,7 +44,7 @@ int main(int argc, char* argv[]) {
     GPUSortSlow gpu_sort_even(device, true);
     GPUSortSlow gpu_sort_odd(device, false);
 
-    auto count = (unsigned long) std::pow(2, 20);
+    auto count = (unsigned long) std::pow(2, 5);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
@@ -58,14 +65,18 @@ int main(int argc, char* argv[]) {
     assert(random_ints == random_ints_2);
 
     auto buffer = gpu_sort_even.put_data(random_ints_3);
-    gpu_sort_odd.put_buffer(buffer);
+    gpu_sort_odd.put_buffer(buffer, random_ints_3.size());
 
     time_func("slow_sort_gpu", [&random_ints_3, &gpu_sort_even, &gpu_sort_odd, count]() {
         for (int i = 0; i < count; i++) {
             if (i % 2 == 0) {
                 gpu_sort_even.execute();
+                auto data = gpu_sort_even.get_data();
+                print_vector(data);
             } else {
                 gpu_sort_odd.execute();
+                auto data = gpu_sort_odd.get_data();
+                print_vector(data);
             }
         }
         random_ints_3 = gpu_sort_even.get_data();

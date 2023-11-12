@@ -26,7 +26,7 @@ METAL_FILES := $(wildcard src/metal/*.metal)
 
 
 ifdef DEBUG
-DBG_OPT_FLAGS=-g
+DBG_OPT_FLAGS=-g -O0
 else
 DBG_OPT_FLAGS=-O2
 endif

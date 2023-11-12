@@ -5,20 +5,25 @@ GPUSortSlow::GPUSortSlow(MTL::Device* device, bool even_pass) : GPUFunc(device),
 
 GPUSortSlow::~GPUSortSlow() {}
 
-void GPUSortSlow::put_buffer(MTL::Buffer* buffer) {
+void GPUSortSlow::put_buffer(MTL::Buffer* buffer, int element_count) {
+    init_shaders();
     if (m_data_buffer != nullptr) {
         std::cout << "GPUSortSlow::put_buffer: m_data_buffer is not null" << std::endl;
         assert(false);
     }
     m_data_buffer = buffer;
+    input_element_count = element_count;
 }
 
 MTL::Buffer* GPUSortSlow::put_data(std::vector<unsigned int>& data) {
+    init_shaders();
     auto buffer_size = data.size() * sizeof(unsigned int);
     m_data_buffer = m_device->newBuffer(buffer_size, MTL::ResourceStorageModeShared);
 
     memcpy(m_data_buffer->contents(), data.data(), buffer_size);
     m_data_buffer->didModifyRange(NS::Range(0, buffer_size));
+
+    input_element_count = data.size();
 
     return m_data_buffer;
 }
