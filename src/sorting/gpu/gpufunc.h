@@ -11,7 +11,7 @@ class GPUFunc {
         ~GPUFunc();
 
         void execute();
-        std::vector<unsigned int> get_data();
+        virtual std::vector<unsigned int> get_data() = 0;
 
     protected:
         virtual MTL::Function* get_function(MTL::Library& library) = 0;
@@ -22,7 +22,7 @@ class GPUFunc {
         MTL::Device* m_device;
         MTL::ComputePipelineState* m_pso;
         MTL::CommandQueue* m_commmand_queue;
-        MTL::Buffer* m_data_buffer;
+        // MTL::Buffer* m_data_buffer;
 
         int input_element_count;
 

@@ -1,4 +1,5 @@
 #include "gpudouble.h"
+#include <vector>
 
 GPUFuncDouble::GPUFuncDouble(MTL::Device* device, NS::String* function_name, int elements_per_thread) :
     GPUFunc(device), m_elements_per_thread(elements_per_thread), m_function_name(function_name) {}
@@ -9,6 +10,16 @@ GPUFuncDouble::~GPUFuncDouble() {
 
 MTL::Function* GPUFuncDouble::get_function(MTL::Library& library) {
     return library.newFunction(m_function_name);
+}
+
+std::vector<unsigned int> GPUFuncDouble::get_data() {
+    // create a vector to hold the output data
+    std::vector<unsigned int> output_data(input_element_count);
+
+    // copy the data from the GPU to the CPU
+    memcpy(output_data.data(), m_data_buffer->contents(),
+           input_element_count * sizeof(unsigned int));
+    return output_data;
 }
 
 void GPUFuncDouble::encode_command(MTL::ComputeCommandEncoder*& encoder) {

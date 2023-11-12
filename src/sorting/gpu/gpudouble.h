@@ -8,6 +8,7 @@ class GPUFuncDouble : public GPUFunc {
         ~GPUFuncDouble();
 
         void prepare_data(std::vector<unsigned int>& data);
+        std::vector<unsigned int> get_data() override;
 
     protected:
         void encode_command(MTL::ComputeCommandEncoder *&encoder) override;
@@ -16,4 +17,5 @@ class GPUFuncDouble : public GPUFunc {
     private:
         int m_elements_per_thread;
         NS::String *m_function_name;
+        MTL::Buffer* m_data_buffer;
 };

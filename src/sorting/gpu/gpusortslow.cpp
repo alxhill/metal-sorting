@@ -1,5 +1,6 @@
 #include "gpusortslow.h"
 #include "Metal/MTLTypes.hpp"
+#include <vector>
 
 GPUSortSlow::GPUSortSlow(MTL::Device* device, bool even_pass) : GPUFunc(device), m_even_pass(even_pass) {}
 
@@ -28,6 +29,16 @@ MTL::Buffer* GPUSortSlow::put_data(std::vector<unsigned int>& data) {
     return m_data_buffer;
 }
 
+std::vector<unsigned int> GPUSortSlow::get_data() {
+    // create a vector to hold the output data
+    std::vector<unsigned int> output_data(input_element_count);
+
+    // copy the data from the GPU to the CPU
+    memcpy(output_data.data(), m_data_buffer->contents(),
+           input_element_count * sizeof(unsigned int));
+    return output_data;
+}
+
 void GPUSortSlow::encode_command(MTL::ComputeCommandEncoder *&encoder) {
     encoder->setComputePipelineState(m_pso);
     encoder->setBuffer(m_data_buffer, 0, 0);
@@ -45,7 +56,7 @@ void GPUSortSlow::encode_command(MTL::ComputeCommandEncoder *&encoder) {
 
 MTL::Function *GPUSortSlow::get_function(MTL::Library &library) {
     if (m_even_pass) {
-        return library.newFunction(MTLSTR("sort_slow_even"));
+        return library.newFunction(MTLSTR("slow_sort_even"));
     }
-    return library.newFunction(MTLSTR("sort_slow_odd"));
+    return library.newFunction(MTLSTR("slow_sort_odd"));
 }

@@ -71,12 +71,8 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < count; i++) {
             if (i % 2 == 0) {
                 gpu_sort_even.execute();
-                auto data = gpu_sort_even.get_data();
-                print_vector(data);
             } else {
                 gpu_sort_odd.execute();
-                auto data = gpu_sort_odd.get_data();
-                print_vector(data);
             }
         }
         random_ints_3 = gpu_sort_even.get_data();
@@ -84,20 +80,20 @@ int main(int argc, char* argv[]) {
 
     assert(random_ints == random_ints_3);
 
-    std::vector<unsigned int> doubled_ints(random_ints_3.size());
+    // std::vector<unsigned int> doubled_ints(random_ints_3.size());
 
-    time_func("double_cpu", [&random_ints_3, &doubled_ints]() {
-        std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
-    });
+    // time_func("double_cpu", [&random_ints_3, &doubled_ints]() {
+    //     std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
+    // });
 
-    gpu_double_64.prepare_data(random_ints_3);
+    // gpu_double_64.prepare_data(random_ints_3);
 
-    time_func("double_gpu_64", [&gpu_double_64]() {
-        gpu_double_64.execute();
-    });
+    // time_func("double_gpu_64", [&gpu_double_64]() {
+    //     gpu_double_64.execute();
+    // });
 
-    random_ints_3 = gpu_double_64.get_data();
-    assert(doubled_ints == random_ints_3);
+    // random_ints_3 = gpu_double_64.get_data();
+    // assert(doubled_ints == random_ints_3);
 
     pool->release();
 

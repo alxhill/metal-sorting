@@ -7,7 +7,6 @@ MTL::Library *GPUFunc::s_library = nullptr;
 GPUFunc::GPUFunc(MTL::Device* device) : m_device(device->retain()) {}
 
 GPUFunc::~GPUFunc() {
-    m_data_buffer->release();
     m_pso->release();
     m_commmand_queue->release();
     m_device->release();
@@ -27,13 +26,7 @@ void GPUFunc::execute() {
 }
 
 std::vector<unsigned int> GPUFunc::get_data() {
-    // create a vector to hold the output data
-    std::vector<unsigned int> output_data(input_element_count);
 
-    // copy the data from the GPU to the CPU
-    memcpy(output_data.data(), m_data_buffer->contents(),
-           input_element_count * sizeof(unsigned int));
-    return output_data;
 }
 
 
