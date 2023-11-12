@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Metal/MTLBuffer.hpp"
 #include "gpufunc.h"
 
 class GPUSortSlow : public GPUFunc {
@@ -7,12 +8,15 @@ class GPUSortSlow : public GPUFunc {
         explicit GPUSortSlow(MTL::Device* device, bool even_pass);
         ~GPUSortSlow();
 
-        static MTL::Buffer* create_data_buffer(MTL::Device* device, std::vector<unsigned int>& data);
+        // only one of these should be called
+        MTL::Buffer* put_data(std::vector<unsigned int>& data);
+        void put_buffer(MTL::Buffer* buffer);
 
     protected:
         void encode_command(MTL::ComputeCommandEncoder *&encoder) override;
         MTL::Function* get_function(MTL::Library& library) override;
     private: 
         bool m_even_pass;
+        MTL::Buffer* m_data_buffer;
 };
 

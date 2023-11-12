@@ -11,7 +11,7 @@ MTL::Function* GPUFuncDouble::get_function(MTL::Library& library) {
     return library.newFunction(m_function_name);
 }
 
-void GPUFuncDouble::encode_command(MTL::ComputeCommandEncoder *&encoder) {
+void GPUFuncDouble::encode_command(MTL::ComputeCommandEncoder*& encoder) {
     encoder->setComputePipelineState(m_pso);
     encoder->setBuffer(m_data_buffer, 0, 0);
 
@@ -25,7 +25,7 @@ void GPUFuncDouble::encode_command(MTL::ComputeCommandEncoder *&encoder) {
     encoder->dispatchThreads(grid_size, thread_group_size);
 }
 
-void GPUFuncDouble::prepare_data(std::vector<unsigned int> &data) {
+void GPUFuncDouble::prepare_data(std::vector<unsigned int>& data) {
     init_shaders();
 
     auto buffer_size = data.size() * sizeof(unsigned int);

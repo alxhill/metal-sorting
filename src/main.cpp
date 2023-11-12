@@ -1,3 +1,4 @@
+#include <cassert>
 #define NS_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
 #define MTK_PRIVATE_IMPLEMENTATION
@@ -56,8 +57,21 @@ int main(int argc, char* argv[]) {
 
     assert(random_ints == random_ints_2);
 
-    // time_func("slow_sort_gpu", [&random_ints_3]() -> {
-    // });
+    auto buffer = gpu_sort_even.put_data(random_ints_3);
+    gpu_sort_odd.put_buffer(buffer);
+
+    time_func("slow_sort_gpu", [&random_ints_3, &gpu_sort_even, &gpu_sort_odd, count]() {
+        for (int i = 0; i < count; i++) {
+            if (i % 2 == 0) {
+                gpu_sort_even.execute();
+            } else {
+                gpu_sort_odd.execute();
+            }
+        }
+        random_ints_3 = gpu_sort_even.get_data();
+    });
+
+    assert(random_ints == random_ints_3);
 
     std::vector<unsigned int> doubled_ints(random_ints_3.size());
 
