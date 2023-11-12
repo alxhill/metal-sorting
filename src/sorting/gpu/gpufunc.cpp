@@ -1,7 +1,4 @@
 #include "gpufunc.h"
-#include "Foundation/NSString.hpp"
-#include "Metal/MTLLibrary.hpp"
-#include "Metal/MTLResource.hpp"
 #include <algorithm>
 #include <memory>
 

@@ -9,7 +9,7 @@ class GPUFuncDouble : public GPUFunc {
 
     protected:
         void encode_command(MTL::ComputeCommandEncoder *&encoder) override;
-        virtual MTL::Function* get_function(MTL::Library& library) override;
+        MTL::Function* get_function(MTL::Library& library) override;
 
     private:
         int m_elements_per_thread;

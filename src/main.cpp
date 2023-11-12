@@ -36,6 +36,8 @@ int main(int argc, char* argv[]) {
     GPUFuncDouble gpu_double_64(device, MTLSTR("double_value_64"), 64);
     GPUFuncDouble gpu_double_128(device, MTLSTR("double_value_128"), 128);
 
+    GPUSortSlow gpu_sort_slow(device);
+
     auto count = (unsigned long) std::pow(2, 20);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
