@@ -24,3 +24,16 @@ void GPUFuncDouble::encode_command(MTL::ComputeCommandEncoder *&encoder) {
 
     encoder->dispatchThreads(grid_size, thread_group_size);
 }
+
+void GPUFuncDouble::prepare_data(std::vector<unsigned int> &data) {
+    init_shaders();
+
+    auto buffer_size = data.size() * sizeof(unsigned int);
+    m_data_buffer =
+        m_device->newBuffer(buffer_size, MTL::ResourceStorageModeShared);
+
+    memcpy(m_data_buffer->contents(), data.data(), buffer_size);
+    m_data_buffer->didModifyRange(NS::Range(0, buffer_size));
+
+    input_element_count = data.size();
+}
