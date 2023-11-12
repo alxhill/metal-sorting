@@ -9,7 +9,7 @@ class GPUSortSlow {
 
         void init_with_data(std::vector<unsigned int>& data);
 
-        void execute_pass();
+        void execute();
 
         std::vector<unsigned int> get_data();
 

@@ -1,4 +1,3 @@
-#include <cassert>
 #define NS_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
 #define MTK_PRIVATE_IMPLEMENTATION
@@ -39,10 +38,7 @@ int main(int argc, char* argv[]) {
 
     MTL::Device *device = MTL::CreateSystemDefaultDevice();
 
-    GPUFuncDouble gpu_double_64(device, MTLSTR("double_value_64"), 64);
-
-    GPUSortSlow gpu_sort_even(device, true);
-    GPUSortSlow gpu_sort_odd(device, false);
+    GPUSortSlow gpu_sort_slow(device);
 
     auto count = (unsigned long) std::pow(2, 16);
     std::cout << "Generating " << count << " random integers" << std::endl;
@@ -64,36 +60,14 @@ int main(int argc, char* argv[]) {
 
     assert(random_ints == random_ints_2);
 
-    auto buffer = gpu_sort_even.put_data(random_ints_3);
-    gpu_sort_odd.put_buffer(buffer, random_ints_3.size());
+    gpu_sort_slow.init_with_data(random_ints_3);
 
-    time_func("slow_sort_gpu", [&random_ints_3, &gpu_sort_even, &gpu_sort_odd, count]() {
-        for (int i = 0; i < count; i++) {
-            if (i % 2 == 0) {
-                gpu_sort_even.execute();
-            } else {
-                gpu_sort_odd.execute();
-            }
-        }
-        random_ints_3 = gpu_sort_even.get_data();
+    time_func("slow_sort_gpu", [&random_ints_3, &gpu_sort_slow]() {
+        gpu_sort_slow.execute();
+        random_ints_3 = gpu_sort_slow.get_data();
     });
 
     assert(random_ints == random_ints_3);
-
-    // std::vector<unsigned int> doubled_ints(random_ints_3.size());
-
-    // time_func("double_cpu", [&random_ints_3, &doubled_ints]() {
-    //     std::transform(random_ints_3.begin(), random_ints_3.end(), doubled_ints.begin(), [](unsigned int i) { return i * 2; });
-    // });
-
-    // gpu_double_64.prepare_data(random_ints_3);
-
-    // time_func("double_gpu_64", [&gpu_double_64]() {
-    //     gpu_double_64.execute();
-    // });
-
-    // random_ints_3 = gpu_double_64.get_data();
-    // assert(doubled_ints == random_ints_3);
 
     pool->release();
 

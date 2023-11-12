@@ -3,6 +3,8 @@
 
 #define NSASSERT(x, err) { if (!(x)) { __builtin_printf("Assertion failed: %s\n", err->localizedDescription()->utf8String()); assert(false); } }
 
+MTL::Library* GPUSortSlow::s_library = nullptr;
+
 GPUSortSlow::GPUSortSlow(MTL::Device* device) {
     m_device = device->retain();
 }
@@ -35,14 +37,17 @@ std::vector<unsigned int> GPUSortSlow::get_data() {
     return output_data;
 }
 
-void GPUSortSlow::execute_pass() {
+void GPUSortSlow::execute() {
     MTL::CommandBuffer *cmd_buffer = m_commmand_queue->commandBuffer();
+    
     MTL::ComputeCommandEncoder *encoder = cmd_buffer->computeCommandEncoder();
 
-    encode_pass(encoder);
+    // each pass = two iterations, one even, one odd
+    for (int i = 0; i < input_element_count / 2; i++) {
+        encode_pass(encoder);
+    }
 
     encoder->endEncoding();
-
     cmd_buffer->commit();
 
     // this blocks until the GPU is done
@@ -68,12 +73,12 @@ void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder) {
     encoder->dispatchThreads(even_grid_size, even_tgs); 
 
     // odd pass
-    encoder->setComputePipelineState(m_even_kernel);
+    encoder->setComputePipelineState(m_odd_kernel);
     encoder->setBuffer(m_data_buffer, 0, 0);
 
     // odd pass ignores first and last element pair
     MTL::Size odd_grid_size = MTL::Size(grid_width - 1, 1, 1);
-    MTL::Size odd_tgs = tg_size(m_even_kernel, odd_grid_size.width);
+    MTL::Size odd_tgs = tg_size(m_odd_kernel, odd_grid_size.width);
 
     encoder->dispatchThreads(odd_grid_size, odd_tgs);
 }

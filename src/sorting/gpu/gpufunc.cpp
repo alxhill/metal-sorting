@@ -20,7 +20,7 @@ void GPUFunc::execute() {
 
     encoder->endEncoding();
     cmd_buffer->commit();
-
+    
     // this blocks until the GPU is done
     cmd_buffer->waitUntilCompleted();
 }
