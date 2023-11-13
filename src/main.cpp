@@ -63,6 +63,7 @@ int main(int argc, char* argv[]) {
     gpu_sort_slow.init_with_data(random_ints_3);
 
     time_func("slow_sort_gpu", [&random_ints_3, &gpu_sort_slow]() {
+        reset_timer();
         gpu_sort_slow.execute();
         random_ints_3 = gpu_sort_slow.get_data();
     });

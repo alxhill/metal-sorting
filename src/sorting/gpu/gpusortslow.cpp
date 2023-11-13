@@ -1,4 +1,5 @@
 #include "gpusortslow.h"
+#include "../time.h"
 #include <vector>
 
 #define NSASSERT(x, err) { if (!(x)) { __builtin_printf("Assertion failed: %s\n", err->localizedDescription()->utf8String()); assert(false); } }
@@ -43,16 +44,20 @@ void GPUSortSlow::execute() {
     
     MTL::ComputeCommandEncoder *encoder = cmd_buffer->computeCommandEncoder();
 
+    log_with_time("Starting encoding pass");
     // each pass = two iterations, one even, one odd
     for (int i = 0; i < input_element_count / 2; i++) {
         encode_pass(encoder);
     }
+    log_with_time("Finished encoding");
 
     encoder->endEncoding();
     cmd_buffer->commit();
 
+    log_with_time("Committed command buffer");
     // this blocks until the GPU is done
     cmd_buffer->waitUntilCompleted();
+    log_with_time("Execution completed");
 }
 
 MTL::Size tg_size(MTL::ComputePipelineState* kernel, int input_element_count) {
