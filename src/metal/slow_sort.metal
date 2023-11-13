@@ -7,15 +7,28 @@ kernel void slow_sort(device unsigned int* data, uint index [[thread_position_in
     uint left = data[idx];
     uint right = data[idx+1];
 
-    data[idx] = min(left, right);
-    data[idx+1] = max(left, right);
+    if (left < right) {
+        data[idx] = left;
+        data[idx+1] = right;
+    } else {
+        data[idx] = right;
+        data[idx+1] = left;
+    }
+    // data[idx] = min(left, right);
+    // data[idx+1] = max(left, right);
 }
 
-// kernel void slow_sort_odd(device unsigned int* data, uint index [[thread_position_in_grid]])
-// {
-//     unsigned int left = data[index*2+1];
-//     unsigned int right = data[index*2+2];
+kernel void slow_sort_copy(const unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
+{
+    uint idx = index*2;
+    uint left = input[idx];
+    uint right = input[idx+1];
 
-//     data[index*2+1] = min(left, right);
-//     data[index*2+2] = max(left, right);
-// }
+    if (left < right) {
+        output[idx] = left;
+        output[idx+1] = right;
+    } else {
+        output[idx] = right;
+        output[idx+1] = left;
+    }
+}

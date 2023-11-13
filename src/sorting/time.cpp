@@ -22,8 +22,8 @@ void reset_timer() {
 
 void log_with_time(const char* message) {
     auto now = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - previous_log_time).count();
-    auto total_duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - global_timer).count();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(now - previous_log_time).count();
+    auto total_duration = std::chrono::duration_cast<std::chrono::microseconds>(now - global_timer).count();
 
     if (global_timer == previous_log_time) {
         std::printf("[%lldµs] - %s\n", total_duration, message);

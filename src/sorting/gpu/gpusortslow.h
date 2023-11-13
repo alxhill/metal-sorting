@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Metal/MTLBuffer.hpp"
 #include "gpufunc.h"
 
 class GPUSortSlow {
@@ -20,9 +21,11 @@ class GPUSortSlow {
 
         MTL::Device* m_device;
         MTL::ComputePipelineState* m_kernel;
+        MTL::ComputePipelineState* m_copy_kernel;
         MTL::CommandQueue* m_commmand_queue;
 
         MTL::Buffer* m_data_buffer;
+        MTL::Buffer* m_internal_buffer;
 
         int input_element_count;
 

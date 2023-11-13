@@ -24,6 +24,8 @@ void GPUSortSlow::init_with_data(std::vector<unsigned int>& data) {
     memcpy(m_data_buffer->contents(), data.data(), buffer_size);
     m_data_buffer->didModifyRange(NS::Range(0, buffer_size));
 
+    m_internal_buffer = m_device->newBuffer(buffer_size, MTL::ResourceStorageModePrivate);
+
     input_element_count = data.size();
 }
 
@@ -100,13 +102,16 @@ void GPUSortSlow::init_shaders() {
     NSASSERT(s_library, error);
 
     MTL::Function* single_pass = s_library->newFunction(MTLSTR("slow_sort"));
+    MTL::Function* copy_pass = s_library->newFunction(MTLSTR("slow_sort_copy"));
 
     m_kernel = m_device->newComputePipelineState(single_pass, &error);
+    m_copy_kernel = m_device->newComputePipelineState(copy_pass, &error);
 
     NSASSERT(m_kernel, error);
+    NSASSERT(m_copy_kernel, error);
 
-    // even_pass_func->release();
     single_pass->release();
+    copy_pass->release();
 
     m_commmand_queue = m_device->newCommandQueue();
 }
