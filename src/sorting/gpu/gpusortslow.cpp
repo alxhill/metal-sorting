@@ -1,5 +1,6 @@
 #include "gpusortslow.h"
 #include "../time.h"
+#include "Metal/MTLBlitCommandEncoder.hpp"
 #include <MacTypes.h>
 #include <vector>
 
@@ -15,6 +16,8 @@ GPUSortSlow::~GPUSortSlow() {
     m_kernel->release();
     m_commmand_queue->release();
     m_device->release();
+    // safe because we retain on init
+    s_library->release();
 }
 
 void GPUSortSlow::init_with_data(std::vector<unsigned int>& data) {
@@ -50,6 +53,7 @@ void GPUSortSlow::execute() {
     encoder->setComputePipelineState(m_copy_kernel);
     encoder->setBuffer(m_data_buffer, 0, 0);
     encoder->setBuffer(m_internal_buffer, 0, 1);
+    encoder->updateFence(m_fence);
 
     // each pass = two iterations, one even, one odd
     for (int i = 0; i < input_element_count / 2; i++) {
@@ -78,6 +82,7 @@ MTL::Size tg_size(MTL::ComputePipelineState* kernel, int input_element_count) {
 }
 
 void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder, int pass_idx) {
+    encoder->waitForFence(m_fence);
     int grid_width = input_element_count / 2;
     // even pass
     encoder->setComputePipelineState(m_kernel);
@@ -97,6 +102,7 @@ void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder, int pass_idx
     MTL::Size odd_tgs = tg_size(m_kernel, odd_grid_size.width);
 
     encoder->dispatchThreads(odd_grid_size, odd_tgs);
+    encoder->updateFence(m_fence);
 }
 
 void GPUSortSlow::init_shaders() {
@@ -106,6 +112,8 @@ void GPUSortSlow::init_shaders() {
         NS::Bundle* bundle = NS::Bundle::mainBundle();
         NS::URL* libUrl = bundle->URLForAuxiliaryExecutable(MTLSTR("shaders.metallib"));
         s_library = m_device->newLibrary(libUrl, &error);
+    } else {
+        s_library->retain();
     }
 
     NSASSERT(s_library, error);
@@ -123,4 +131,6 @@ void GPUSortSlow::init_shaders() {
     copy_pass->release();
 
     m_commmand_queue = m_device->newCommandQueue();
+
+    m_fence = m_device->newFence();
 }

@@ -24,6 +24,8 @@ class GPUSortSlow {
         MTL::ComputePipelineState* m_copy_kernel;
         MTL::CommandQueue* m_commmand_queue;
 
+        MTL::Fence* m_fence;
+
         MTL::Buffer* m_data_buffer;
         MTL::Buffer* m_internal_buffer;
 
