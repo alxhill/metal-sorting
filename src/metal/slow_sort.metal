@@ -18,7 +18,7 @@ kernel void slow_sort(device unsigned int* data, uint index [[thread_position_in
     // data[idx+1] = max(left, right);
 }
 
-kernel void slow_sort_copy(const unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
+kernel void slow_sort_copy(device unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
 {
     uint idx = index*2;
     uint left = input[idx];

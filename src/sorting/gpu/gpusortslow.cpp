@@ -69,9 +69,10 @@ MTL::Size tg_size(MTL::ComputePipelineState* kernel, int input_element_count) {
 
 void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder, int pass_idx) {
     int grid_width = input_element_count / 2;
-
+    auto kernel = m_kernel;
     // even pass
     if (pass_idx == 0) {
+        kernel = m_copy_kernel;
         encoder->setComputePipelineState(m_copy_kernel);
         // first copy to the internal buffer
         encoder->setBuffer(m_data_buffer, 0, 0);
@@ -83,12 +84,13 @@ void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder, int pass_idx
     }
 
     MTL::Size even_grid_size = MTL::Size(grid_width, 1, 1);
-    MTL::Size even_tgs = tg_size(m_kernel, even_grid_size.width);
+    MTL::Size even_tgs = tg_size(kernel, even_grid_size.width);
 
     encoder->dispatchThreads(even_grid_size, even_tgs); 
 
     // odd pass
     if (pass_idx == input_element_count / 2 - 1) {
+        kernel = m_copy_kernel;
         encoder->setComputePipelineState(m_copy_kernel);
         // copy back to the data buffer on the last pass
         encoder->setBuffer(m_internal_buffer, 0, 0);
@@ -104,7 +106,7 @@ void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder, int pass_idx
 
     // and ignore the last element
     MTL::Size odd_grid_size = MTL::Size(grid_width - 1, 1, 1);
-    MTL::Size odd_tgs = tg_size(m_kernel, odd_grid_size.width);
+    MTL::Size odd_tgs = tg_size(kernel, odd_grid_size.width);
 
     encoder->dispatchThreads(odd_grid_size, odd_tgs);
 }
