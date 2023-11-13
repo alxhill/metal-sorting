@@ -11,8 +11,6 @@ GPUSortSlow::GPUSortSlow(MTL::Device* device) {
 }
 
 GPUSortSlow::~GPUSortSlow() {
-    // m_even_kernel->release();
-    // m_odd_kernel->release();
     m_kernel->release();
     m_commmand_queue->release();
     m_device->release();
@@ -72,7 +70,6 @@ void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder) {
     // even pass
     encoder->setComputePipelineState(m_kernel);
     encoder->setBuffer(m_data_buffer, 0, 0);
-    // encoder->setBytes(&offset, sizeof(unsigned int), 1);
 
     MTL::Size even_grid_size = MTL::Size(grid_width, 1, 1);
     MTL::Size even_tgs = tg_size(m_kernel, even_grid_size.width);
@@ -103,19 +100,12 @@ void GPUSortSlow::init_shaders() {
     NSASSERT(s_library, error);
 
     MTL::Function* single_pass = s_library->newFunction(MTLSTR("slow_sort"));
-    // MTL::Function* even_pass_func = s_library->newFunction(MTLSTR("slow_sort_even"));
-    // MTL::Function* odd_pass_func = s_library->newFunction(MTLSTR("slow_sort_odd"));
 
-    // m_even_kernel = m_device->newComputePipelineState(even_pass_func, &error);
-    // m_odd_kernel = m_device->newComputePipelineState(odd_pass_func, &error);
     m_kernel = m_device->newComputePipelineState(single_pass, &error);
 
-    // NSASSERT(m_even_kernel, error);
-    // NSASSERT(m_odd_kernel, error);
     NSASSERT(m_kernel, error);
 
     // even_pass_func->release();
-    // odd_pass_func->release();
     single_pass->release();
 
     m_commmand_queue = m_device->newCommandQueue();

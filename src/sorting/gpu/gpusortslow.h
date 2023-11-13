@@ -20,8 +20,6 @@ class GPUSortSlow {
 
         MTL::Device* m_device;
         MTL::ComputePipelineState* m_kernel;
-        MTL::ComputePipelineState* m_even_kernel;
-        MTL::ComputePipelineState* m_odd_kernel;
         MTL::CommandQueue* m_commmand_queue;
 
         MTL::Buffer* m_data_buffer;

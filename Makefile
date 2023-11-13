@@ -37,6 +37,12 @@ else
 ASAN_FLAGS=
 endif
 
+ifdef PROFILE
+PROFILE_FLAGS=-sectcreate __TEXT __info_plist Info.plist
+else
+PROFILE_FLAGS=
+endif
+
 CC=clang++
 CFLAGS=-Wall -std=c++17 -I./metal-cpp -I./metal-cpp-extensions -fno-objc-arc $(DBG_OPT_FLAGS) $(ASAN_FLAGS)
 LDFLAGS=-framework Metal -framework Foundation -framework Cocoa -framework CoreGraphics -framework MetalKit
@@ -55,15 +61,10 @@ build/shaders.metallib: $(METAL_FILES)
 	xcrun -sdk macosx metal -frecord-sources=flat -o $@ $(METAL_FILES)
 
 build/main: $(OBJECTS) build/shaders.metallib Makefile
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(PROFILE_FLAGS) $(OBJECTS) -o $@
 
 run: build/main
 	@./$(TARGET)
-
-### For future reference:
-#build/10-frame-debugging: $(APP_10FRAMEDEBUGGING_OBJECTS) Makefile
-# project-less capture requires an Info.plist. Here it is embedded directly into the binary
-# $(CC) $(CFLAGS) $(LDFLAGS) -sectcreate __TEXT __info_plist ./learn-metal/10-frame-debugging/Info.plist $(APP_10FRAMEDEBUGGING_OBJECTS) -o $@
 
 clean:
 	rm -f $(OBJECTS) \
