@@ -1,10 +1,10 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// kernel void copy_buffer(device unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
-// {
-//     output[index] = input[index];
-// }
+kernel void copy_buffer(constant unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
+{
+    output[index] = input[index];
+}
 
 kernel void slow_sort(device unsigned int* data, uint index [[thread_position_in_grid]])
 {
@@ -19,21 +19,19 @@ kernel void slow_sort(device unsigned int* data, uint index [[thread_position_in
         data[idx] = right;
         data[idx+1] = left;
     }
-    // data[idx] = min(left, right);
-    // data[idx+1] = max(left, right);
 }
 
-kernel void slow_sort_copy(device unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
-{
-    uint idx = index*2;
-    uint left = input[idx];
-    uint right = input[idx+1];
+// kernel void slow_sort_copy(device unsigned int* input, device unsigned int* output, uint index [[thread_position_in_grid]])
+// {
+//     uint idx = index*2;
+//     uint left = input[idx];
+//     uint right = input[idx+1];
 
-    if (left < right) {
-        output[idx] = left;
-        output[idx+1] = right;
-    } else {
-        output[idx] = right;
-        output[idx+1] = left;
-    }
-}
+//     if (left < right) {
+//         output[idx] = left;
+//         output[idx+1] = right;
+//     } else {
+//         output[idx] = right;
+//         output[idx+1] = left;
+//     }
+// }
