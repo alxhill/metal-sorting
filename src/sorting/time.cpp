@@ -11,8 +11,8 @@ void time_func(const char* name, std::function<void()> func) {
     func();
     auto end = std::chrono::high_resolution_clock::now();
 
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << name << "() execution time: " << duration << " µs" << std::endl;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << name << "() execution time: " << duration << " ms" << std::endl;
 }
 
 void reset_timer() {
@@ -22,13 +22,13 @@ void reset_timer() {
 
 void log_with_time(const char* message) {
     auto now = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(now - previous_log_time).count();
-    auto total_duration = std::chrono::duration_cast<std::chrono::microseconds>(now - global_timer).count();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - previous_log_time).count();
+    auto total_duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - global_timer).count();
 
     if (global_timer == previous_log_time) {
-        std::printf("[%lldµs] - %s\n", total_duration, message);
+        std::printf("[%lldms] - %s\n", total_duration, message);
     } else {
-        std::printf("[%lldµs | Δ%lldµs] - %s\n", total_duration, duration, message);
+        std::printf("[%lldms | Δ%lldms] - %s\n", total_duration, duration, message);
     }
     previous_log_time = now;
 }
