@@ -1,5 +1,6 @@
 #include "gpusortslow.h"
 #include "../time.h"
+#include <MacTypes.h>
 #include <vector>
 
 #define NSASSERT(x, err) { if (!(x)) { __builtin_printf("Assertion failed: %s\n", err->localizedDescription()->utf8String()); assert(false); } }
@@ -47,7 +48,7 @@ void GPUSortSlow::execute() {
     log_with_time("Starting encoding pass");
     // each pass = two iterations, one even, one odd
     for (int i = 0; i < input_element_count / 2; i++) {
-        encode_pass(encoder);
+        encode_pass(encoder, i);
     }
     log_with_time("Finished encoding");
 
@@ -66,12 +67,20 @@ MTL::Size tg_size(MTL::ComputePipelineState* kernel, int input_element_count) {
     return MTL::Size(threads_per_group, 1, 1);
 }
 
-void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder) {
+void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder, int pass_idx) {
     int grid_width = input_element_count / 2;
 
     // even pass
-    encoder->setComputePipelineState(m_kernel);
-    encoder->setBuffer(m_data_buffer, 0, 0);
+    if (pass_idx == 0) {
+        encoder->setComputePipelineState(m_copy_kernel);
+        // first copy to the internal buffer
+        encoder->setBuffer(m_data_buffer, 0, 0);
+        encoder->setBuffer(m_internal_buffer, 0, 1);
+    } else {
+        // otherwise just mutate the internal buffer
+        encoder->setComputePipelineState(m_kernel);
+        encoder->setBuffer(m_internal_buffer, 0, 0);
+    }
 
     MTL::Size even_grid_size = MTL::Size(grid_width, 1, 1);
     MTL::Size even_tgs = tg_size(m_kernel, even_grid_size.width);
@@ -79,6 +88,16 @@ void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder) {
     encoder->dispatchThreads(even_grid_size, even_tgs); 
 
     // odd pass
+    if (pass_idx == input_element_count / 2 - 1) {
+        encoder->setComputePipelineState(m_copy_kernel);
+        // copy back to the data buffer on the last pass
+        encoder->setBuffer(m_internal_buffer, 0, 0);
+        encoder->setBuffer(m_data_buffer, sizeof(unsigned int), 1);
+    } else {
+        // otherwise mutate the internal buffer
+        encoder->setComputePipelineState(m_kernel);
+        encoder->setBuffer(m_internal_buffer, sizeof(unsigned int), 0);
+    }
     encoder->setComputePipelineState(m_kernel);
     // skip the first element
     encoder->setBuffer(m_data_buffer, sizeof(unsigned int), 0);

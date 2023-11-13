@@ -15,7 +15,7 @@ class GPUSortSlow {
         std::vector<unsigned int> get_data();
 
     protected:
-        void encode_pass(MTL::ComputeCommandEncoder *&encoder);
+        void encode_pass(MTL::ComputeCommandEncoder *&encoder, int pass_idx);
     private: 
         void init_shaders();
 
