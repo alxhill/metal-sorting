@@ -10,8 +10,9 @@ GPUSortSlow::GPUSortSlow(MTL::Device* device) {
 }
 
 GPUSortSlow::~GPUSortSlow() {
-    m_even_kernel->release();
-    m_odd_kernel->release();
+    // m_even_kernel->release();
+    // m_odd_kernel->release();
+    m_kernel->release();
     m_commmand_queue->release();
     m_device->release();
 }
@@ -64,21 +65,23 @@ void GPUSortSlow::encode_pass(MTL::ComputeCommandEncoder *&encoder) {
     int grid_width = input_element_count / 2;
 
     // even pass
-    encoder->setComputePipelineState(m_even_kernel);
+    encoder->setComputePipelineState(m_kernel);
     encoder->setBuffer(m_data_buffer, 0, 0);
+    // encoder->setBytes(&offset, sizeof(unsigned int), 1);
 
     MTL::Size even_grid_size = MTL::Size(grid_width, 1, 1);
-    MTL::Size even_tgs = tg_size(m_even_kernel, even_grid_size.width);
+    MTL::Size even_tgs = tg_size(m_kernel, even_grid_size.width);
 
     encoder->dispatchThreads(even_grid_size, even_tgs); 
 
     // odd pass
-    encoder->setComputePipelineState(m_odd_kernel);
-    encoder->setBuffer(m_data_buffer, 0, 0);
+    encoder->setComputePipelineState(m_kernel);
+    // skip the first element
+    encoder->setBuffer(m_data_buffer, sizeof(unsigned int), 0);
 
-    // odd pass ignores first and last element pair
+    // and ignore the last element
     MTL::Size odd_grid_size = MTL::Size(grid_width - 1, 1, 1);
-    MTL::Size odd_tgs = tg_size(m_odd_kernel, odd_grid_size.width);
+    MTL::Size odd_tgs = tg_size(m_kernel, odd_grid_size.width);
 
     encoder->dispatchThreads(odd_grid_size, odd_tgs);
 }
@@ -94,17 +97,21 @@ void GPUSortSlow::init_shaders() {
 
     NSASSERT(s_library, error);
 
-    MTL::Function* even_pass_func = s_library->newFunction(MTLSTR("slow_sort_even"));
-    MTL::Function* odd_pass_func = s_library->newFunction(MTLSTR("slow_sort_odd"));
+    MTL::Function* single_pass = s_library->newFunction(MTLSTR("slow_sort"));
+    // MTL::Function* even_pass_func = s_library->newFunction(MTLSTR("slow_sort_even"));
+    // MTL::Function* odd_pass_func = s_library->newFunction(MTLSTR("slow_sort_odd"));
 
-    m_even_kernel = m_device->newComputePipelineState(even_pass_func, &error);
-    m_odd_kernel = m_device->newComputePipelineState(odd_pass_func, &error);
+    // m_even_kernel = m_device->newComputePipelineState(even_pass_func, &error);
+    // m_odd_kernel = m_device->newComputePipelineState(odd_pass_func, &error);
+    m_kernel = m_device->newComputePipelineState(single_pass, &error);
 
-    NSASSERT(m_even_kernel, error);
-    NSASSERT(m_odd_kernel, error);
+    // NSASSERT(m_even_kernel, error);
+    // NSASSERT(m_odd_kernel, error);
+    NSASSERT(m_kernel, error);
 
-    even_pass_func->release();
-    odd_pass_func->release();
+    // even_pass_func->release();
+    // odd_pass_func->release();
+    single_pass->release();
 
     m_commmand_queue = m_device->newCommandQueue();
 }
