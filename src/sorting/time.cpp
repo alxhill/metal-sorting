@@ -5,6 +5,11 @@
 
 std::chrono::time_point<std::chrono::high_resolution_clock> global_timer;
 std::chrono::time_point<std::chrono::high_resolution_clock> previous_log_time;
+bool enable_logging = true;
+
+void set_log_state(bool new_state) {
+    enable_logging = new_state;
+}
 
 void time_func(const char* name, std::function<void()> func) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -21,6 +26,9 @@ void reset_timer() {
 }
 
 void log_with_time(const char* message) {
+    if (!enable_logging)
+        return;
+
     auto now = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - previous_log_time).count();
     auto total_duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - global_timer).count();

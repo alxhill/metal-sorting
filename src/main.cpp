@@ -40,13 +40,14 @@ int main(int argc, char* argv[]) {
 
     GPUSortSlow gpu_sort_slow(device);
 
-    auto count = (unsigned long) std::pow(2, 16);
+    auto count = (unsigned long) std::pow(2, 4);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
 
     std::vector<unsigned int> random_ints_2 = random_ints;
     std::vector<unsigned int> random_ints_3 = random_ints;
+    std::vector<unsigned int> random_ints_4 = random_ints;
 
     time_func("std::sort", [&random_ints]() {
         random_ints = sort_stdlib(random_ints);
@@ -60,15 +61,23 @@ int main(int argc, char* argv[]) {
 
     assert(random_ints == random_ints_2);
 
-    gpu_sort_slow.init_with_data(random_ints_3);
-
-    time_func("slow_sort_gpu", [&random_ints_3, &gpu_sort_slow]() {
-        reset_timer();
-        gpu_sort_slow.execute();
-        random_ints_3 = gpu_sort_slow.get_data();
+    time_func("sort_bitonic", [&random_ints_3]() {
+        random_ints_3 = sort_bitonic(random_ints_3);
     });
 
     assert(random_ints == random_ints_3);
+
+    set_log_state(false);
+
+    gpu_sort_slow.init_with_data(random_ints_4);
+
+    time_func("slow_sort_gpu", [&random_ints_4, &gpu_sort_slow]() {
+        reset_timer();
+        gpu_sort_slow.execute();
+        random_ints_4 = gpu_sort_slow.get_data();
+    });
+
+    assert(random_ints == random_ints_4);
 
     pool->release();
 
