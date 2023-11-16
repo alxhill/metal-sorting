@@ -1,8 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-kernel void slow_sort(device unsigned int* data, uint index [[thread_position_in_grid]])
+kernel void bitonic_sort(device unsigned int* data, uint index [[thread_position_in_grid]])
 {
+    // todo
     uint idx = index*2;
     uint left = data[idx];
     uint right = data[idx+1];
