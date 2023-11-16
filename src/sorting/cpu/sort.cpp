@@ -21,12 +21,12 @@ std::vector<unsigned int> sort_bitonic(const std::vector<unsigned int>& values) 
     std::vector<unsigned int> result(values);
     for (int base_size = 2; base_size < values.size(); base_size *= 2) {
         for (int i = 0; i < values.size(); i += base_size*2) {
-            bitonic_merge(result, i, i + base_size, true);
-            bitonic_merge(result, i + base_size, i + base_size*2, false);
+            bitonic_merge_asc(result, i, i + base_size);
+            bitonic_merge_dec(result, i + base_size, i + base_size*2);
         }
     }
 
-    bitonic_merge(result, 0, result.size(), true);
+    bitonic_merge_asc(result, 0, result.size());
     return result;
 }
 
@@ -76,10 +76,8 @@ void bitonic_split_asc(std::vector<unsigned int> &bitonic_seq, const int start, 
         int j = i + diff;
         unsigned int left = bitonic_seq[i];
         unsigned int right = bitonic_seq[j];
-        if (right < left) {
-            bitonic_seq[i] = right;
-            bitonic_seq[j] = left;
-        }
+        bitonic_seq[i] = std::min(left, right);
+        bitonic_seq[j] = std::max(left, right);
     }
 }
 
@@ -89,10 +87,8 @@ void bitonic_split_dec(std::vector<unsigned int> &bitonic_seq, const int start, 
         int j = i + diff;
         unsigned int left = bitonic_seq[i];
         unsigned int right = bitonic_seq[j];
-        if (left < right) {
-            bitonic_seq[i] = right;
-            bitonic_seq[j] = left;
-        }
+        bitonic_seq[i] = std::max(left, right);
+        bitonic_seq[j] = std::min(left, right);
     }
 }
 
