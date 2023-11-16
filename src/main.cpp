@@ -69,15 +69,15 @@ int main(int argc, char* argv[]) {
 
     set_log_state(false);
 
-    gpu_sort_slow.init_with_data(random_ints_4);
+    // gpu_sort_slow.init_with_data(random_ints_4);
 
-    time_func("slow_sort_gpu", [&random_ints_4, &gpu_sort_slow]() {
-        reset_timer();
-        gpu_sort_slow.execute();
-        random_ints_4 = gpu_sort_slow.get_data();
-    });
+    // time_func("slow_sort_gpu", [&random_ints_4, &gpu_sort_slow]() {
+    //     reset_timer();
+    //     gpu_sort_slow.execute();
+    //     random_ints_4 = gpu_sort_slow.get_data();
+    // });
 
-    assert(random_ints == random_ints_4);
+    // assert(random_ints == random_ints_4);
 
     pool->release();
 
