@@ -55,8 +55,9 @@ void bitonic_split_asc(std::vector<unsigned int> &bitonic_seq, const int start, 
         unsigned int left = bitonic_seq[i];
         unsigned int right = bitonic_seq[j];
         if (right < left) {
-            bitonic_seq[i] = right;
-            bitonic_seq[j] = left;
+            std::swap(bitonic_seq[i], bitonic_seq[j]);
+            // bitonic_seq[i] = right;
+            // bitonic_seq[j] = left;
         }
     }
 }
@@ -68,8 +69,9 @@ void bitonic_split_dec(std::vector<unsigned int> &bitonic_seq, const int start, 
         unsigned int left = bitonic_seq[i];
         unsigned int right = bitonic_seq[j];
         if (left < right) {
-            bitonic_seq[i] = right;
-            bitonic_seq[j] = left;
+            std::swap(bitonic_seq[i], bitonic_seq[j]);
+            // bitonic_seq[i] = right;
+            // bitonic_seq[j] = left;
         }
     }
 }
