@@ -8,13 +8,6 @@ void check_power_of_2(std::vector<unsigned int> values);
 void bitonic_merge(std::vector<unsigned int> &values, const int start, const int end, bool ascending);
 void bitonic_split(std::vector<unsigned int> &bitonic_seq, const int start, const int end, bool ascending);
 
-void print_vec(std::vector<unsigned int>& values) {
-    for (auto value : values) {
-        std::cout << value << ",";
-    }
-    std::cout << std::endl;
-}
-
 std::vector<unsigned int> sort_bitonic(const std::vector<unsigned int>& values) {
     if (values.size() == 1) {
         return values;
@@ -46,8 +39,8 @@ void bitonic_split(std::vector<unsigned int> &bitonic_seq, const int start, cons
     int diff = (end - start) / 2;
     for (int i = start; i < start + diff; i++) {
         int j = i + diff;
-        unsigned int left = bitonic_seq.at(i);
-        unsigned int right = bitonic_seq.at(j);
+        unsigned int left = bitonic_seq[i];
+        unsigned int right = bitonic_seq[j];
         if (ascending) {
             bitonic_seq[i] = std::min(left, right);
             bitonic_seq[j] = std::max(left, right);

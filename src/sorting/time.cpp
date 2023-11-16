@@ -16,8 +16,8 @@ void time_func(const char* name, std::function<void()> func) {
     func();
     auto end = std::chrono::high_resolution_clock::now();
 
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << name << "() execution time: " << duration << " µs" << std::endl;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << name << "() execution time: " << duration << " ms" << std::endl;
 }
 
 void reset_timer() {
