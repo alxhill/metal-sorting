@@ -15,6 +15,7 @@ class GPUSortBitonic {
 
     protected:
         void encode_merge(MTL::ComputeCommandEncoder*& encoder, int start, int end, bool ascending);
+        void encode_split(MTL::ComputeCommandEncoder*& encoder, int start, int end, bool ascending);
     private: 
         void init_shaders();
 

@@ -71,7 +71,7 @@ void bitonic_split_dec(std::vector<unsigned int> &bitonic_seq, const int start, 
     }
 }
 
-// slower bitonic implementation
+// slower more readable bitonic implementation
 void bitonic_merge(std::vector<unsigned int> &bitonic_seq, const int start, const int end, bool ascending) {
     bitonic_split(bitonic_seq, start, end, ascending);
     if (end-start > 2) {

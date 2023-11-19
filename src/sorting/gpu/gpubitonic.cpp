@@ -1,6 +1,7 @@
 #include "gpubitonic.h"
 #include "../time.h"
 #include "Metal/MTLComputeCommandEncoder.hpp"
+#include <algorithm>
 
 #define NSASSERT(x, err) { if (!(x)) { __builtin_printf("Assertion failed: %s\n", err->localizedDescription()->utf8String()); assert(false); } }
 
@@ -59,7 +60,29 @@ void GPUSortBitonic::execute() {
 }
 
 void GPUSortBitonic::encode_merge(MTL::ComputeCommandEncoder*& encoder, int start, int end, bool ascending) {
+    encode_split(encoder, start, end, ascending);
+    if (end - start > 2) {
+        int mid = start + (end - start) / 2;
+        encode_merge(encoder, start, mid, ascending);
+        encode_merge(encoder, mid, end, ascending);
+    }
+}
 
+void GPUSortBitonic::encode_split(MTL::ComputeCommandEncoder*& encoder, int start, int end, bool ascending) {
+    MTL::ComputePipelineState* kernel = ascending ? m_swap_asc_kernel : m_swap_dec_kernel;
+    encoder->setComputePipelineState(kernel);
+
+    int diff = (end - start) / 2;
+
+    encoder->setBuffer(m_data_buffer, start * sizeof(unsigned int), 0);
+    encoder->setBuffer(m_data_buffer, (start + diff) * sizeof(unsigned int), 1);
+
+    MTL::Size grid_size = MTL::Size(diff, 1, 1);
+    int max_threads_per_tg = kernel->maxTotalThreadsPerThreadgroup();
+    int threads_per_group = max_threads_per_tg > input_element_count ? input_element_count : max_threads_per_tg;
+    MTL::Size tgs = MTL::Size(threads_per_group, 1, 1);
+
+    encoder->dispatchThreads(grid_size, tgs);
 }
 
 void GPUSortBitonic::init_shaders() {
