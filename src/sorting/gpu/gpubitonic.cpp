@@ -1,6 +1,6 @@
 #include "gpubitonic.h"
-
-MTL::Library* GPUSortBitonic::s_library = nullptr;
+#include "../time.h"
+#include "Metal/MTLComputeCommandEncoder.hpp"
 
 #define NSASSERT(x, err) { if (!(x)) { __builtin_printf("Assertion failed: %s\n", err->localizedDescription()->utf8String()); assert(false); } }
 
@@ -9,7 +9,8 @@ GPUSortBitonic::GPUSortBitonic(MTL::Device* device) {
 }
 
 GPUSortBitonic::~GPUSortBitonic() {
-    m_kernel->release();
+    m_swap_asc_kernel->release();
+    m_swap_dec_kernel->release();
     m_commmand_queue->release();
     m_device->release();
 }
@@ -35,28 +36,52 @@ std::vector<unsigned int> GPUSortBitonic::get_data() {
 }
 
 void GPUSortBitonic::execute() {
+    MTL::CommandBuffer* cmd_buffer = m_commmand_queue->commandBuffer();
+    MTL::ComputeCommandEncoder* encoder = cmd_buffer->computeCommandEncoder();
+
+    log_with_time("Starting bitonic encoding");
+
+    for (int base_size = 2; base_size < input_element_count; base_size *= 2) {
+        for (int i = 0; i < input_element_count; i += base_size*2) {
+            encode_merge(encoder, i, i + base_size, true);
+            encode_merge(encoder, i + base_size, i + base_size * 2, false);
+        }
+    }
+    encode_merge(encoder, 0, input_element_count, true);
+    log_with_time("Finished bitonic encoding");
+
+    encoder->endEncoding();
+    cmd_buffer->commit();
+
+    cmd_buffer->waitUntilCompleted();
+
+    log_with_time("Bitonic execution completed");
+}
+
+void GPUSortBitonic::encode_merge(MTL::ComputeCommandEncoder*& encoder, int start, int end, bool ascending) {
 
 }
 
 void GPUSortBitonic::init_shaders() {
     NS::Error* error = nullptr;
 
-    if (s_library == nullptr) {
-        NS::Bundle* bundle = NS::Bundle::mainBundle();
-        NS::URL* libUrl = bundle->URLForAuxiliaryExecutable(MTLSTR("shaders.metallib"));
-        s_library = m_device->newLibrary(libUrl, &error);
-    }
+    NS::Bundle* bundle = NS::Bundle::mainBundle();
+    NS::URL* libUrl = bundle->URLForAuxiliaryExecutable(MTLSTR("shaders.metallib"));
+    MTL::Library* library = m_device->newLibrary(libUrl, &error);
 
-    NSASSERT(s_library, error);
+    NSASSERT(library, error);
 
-    MTL::Function* single_pass = s_library->newFunction(MTLSTR("slow_sort"));
+    MTL::Function* swap_asc = library->newFunction(MTLSTR("bitonic_swap_asc"));
+    MTL::Function* swap_dec = library->newFunction(MTLSTR("bitonic_swap_dec"));
 
-    m_kernel = m_device->newComputePipelineState(single_pass, &error);
+    m_swap_asc_kernel = m_device->newComputePipelineState(swap_asc, &error);
+    m_swap_dec_kernel = m_device->newComputePipelineState(swap_dec, &error);
 
-    NSASSERT(m_kernel, error);
+    NSASSERT(m_swap_asc_kernel, error);
+    NSASSERT(m_swap_dec_kernel, error);
 
-    // even_pass_func->release();
-    single_pass->release();
+    swap_asc->release();
+    swap_dec->release();
 
     m_commmand_queue = m_device->newCommandQueue();
 }

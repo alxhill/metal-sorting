@@ -14,12 +14,13 @@ class GPUSortBitonic {
         std::vector<unsigned int> get_data();
 
     protected:
-        // void encode_pass(MTL::ComputeCommandEncoder *&encoder);
+        void encode_merge(MTL::ComputeCommandEncoder*& encoder, int start, int end, bool ascending);
     private: 
         void init_shaders();
 
         MTL::Device* m_device;
-        MTL::ComputePipelineState* m_kernel;
+        MTL::ComputePipelineState* m_swap_asc_kernel;
+        MTL::ComputePipelineState* m_swap_dec_kernel;
         MTL::CommandQueue* m_commmand_queue;
 
         MTL::Buffer* m_data_buffer;
