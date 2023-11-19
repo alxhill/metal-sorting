@@ -1,6 +1,5 @@
 #include "gpubitonic.h"
 #include "../time.h"
-#include "Metal/MTLComputeCommandEncoder.hpp"
 #include <algorithm>
 
 #define NSASSERT(x, err) { if (!(x)) { __builtin_printf("Assertion failed: %s\n", err->localizedDescription()->utf8String()); assert(false); } }
