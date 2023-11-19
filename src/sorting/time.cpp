@@ -2,6 +2,7 @@
 #include <cassert>
 #include <chrono>
 #include <cstdio>
+#include <ratio>
 
 std::chrono::time_point<std::chrono::high_resolution_clock> global_timer;
 std::chrono::time_point<std::chrono::high_resolution_clock> previous_log_time;
@@ -34,9 +35,9 @@ void log_with_time(const char* message) {
     auto total_duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - global_timer).count();
 
     if (global_timer == previous_log_time) {
-        std::printf("[%lldµs] - %s\n", total_duration, message);
+        std::printf("[%lldms] - %s\n", total_duration, message);
     } else {
-        std::printf("[%lldµs | Δ%lldµs] - %s\n", total_duration, duration, message);
+        std::printf("[%lldms | Δ%lldms] - %s\n", total_duration, duration, message);
     }
     previous_log_time = now;
 }

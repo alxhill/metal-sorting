@@ -68,6 +68,7 @@ void GPUSortBitonic::encode_merge(MTL::ComputeCommandEncoder*& encoder, int star
 }
 
 void GPUSortBitonic::encode_split(MTL::ComputeCommandEncoder*& encoder, int start, int end, bool ascending) {
+    std::cout << "Encoding split from " << start << " to " << end << (ascending ? " ascending" : " decending") << std::endl;
     MTL::ComputePipelineState* kernel = ascending ? m_swap_asc_kernel : m_swap_dec_kernel;
     encoder->setComputePipelineState(kernel);
 
