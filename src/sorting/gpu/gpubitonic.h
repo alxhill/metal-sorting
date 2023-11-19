@@ -2,10 +2,10 @@
 
 #include "../../header.hpp"
 
-class GPUSortSlow {
+class GPUSortBitonic {
     public:
-        explicit GPUSortSlow(MTL::Device* device);
-        ~GPUSortSlow();
+        explicit GPUSortBitonic(MTL::Device* device);
+        ~GPUSortBitonic();
 
         void init_with_data(std::vector<unsigned int>& data);
 
@@ -14,7 +14,7 @@ class GPUSortSlow {
         std::vector<unsigned int> get_data();
 
     protected:
-        void encode_pass(MTL::ComputeCommandEncoder *&encoder);
+        // void encode_pass(MTL::ComputeCommandEncoder *&encoder);
     private: 
         void init_shaders();
 

@@ -1,13 +1,18 @@
 #include <metal_stdlib>
 using namespace metal;
 
-kernel void bitonic_sort(device unsigned int* data, uint index [[thread_position_in_grid]])
+kernel void bitonic_swap_asc(device unsigned int* left, device unsigned int* right, uint index [[thread_position_in_grid]])
 {
-    // todo
-    uint idx = index*2;
-    uint left = data[idx];
-    uint right = data[idx+1];
+    unsigned int l = left[index];
+    unsigned int r = right[index];
+    left[index] = min(l, r);
+    right[index] = max(l, r);
+}
 
-    data[idx] = min(left, right);
-    data[idx+1] = max(left, right);
+kernel void bitonic_swap_dec(device unsigned int* left, device unsigned int* right, uint index [[thread_position_in_grid]])
+{
+    unsigned int l = left[index];
+    unsigned int r = right[index];
+    left[index] = max(l, r);
+    right[index] = min(l, r);
 }

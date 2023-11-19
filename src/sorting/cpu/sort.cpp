@@ -30,15 +30,7 @@ std::vector<unsigned int> sort_bitonic(const std::vector<unsigned int>& values) 
     return result;
 }
 
-void bitonic_merge(std::vector<unsigned int> &bitonic_seq, const int start, const int end, bool ascending) {
-    bitonic_split(bitonic_seq, start, end, ascending);
-    if (end-start > 2) {
-        int mid = start + (end - start) / 2;
-        bitonic_merge(bitonic_seq, start, mid, ascending);
-        bitonic_merge(bitonic_seq, mid, end, ascending);
-    }
-}
-
+// optimised implementation
 void bitonic_merge_asc(std::vector<unsigned int> &bitonic_seq, const int start, const int end) {
     bitonic_split_asc(bitonic_seq, start, end);
     if (end-start > 2) {
@@ -54,19 +46,6 @@ void bitonic_merge_dec(std::vector<unsigned int> &bitonic_seq, const int start, 
         int mid = start + (end - start) / 2;
         bitonic_merge_dec(bitonic_seq, start, mid);
         bitonic_merge_dec(bitonic_seq, mid, end);
-    }
-}
-
-void bitonic_split(std::vector<unsigned int> &bitonic_seq, const int start, const int end, bool ascending) {
-    int diff = (end - start) / 2;
-    for (int i = start; i < start + diff; i++) {
-        int j = i + diff;
-        unsigned int left = bitonic_seq[i];
-        unsigned int right = bitonic_seq[j];
-        if ((left < right && !ascending) || (right < left && ascending)) {
-            bitonic_seq[i] = right;
-            bitonic_seq[j] = left;
-        }
     }
 }
 
@@ -89,6 +68,29 @@ void bitonic_split_dec(std::vector<unsigned int> &bitonic_seq, const int start, 
         unsigned int right = bitonic_seq[j];
         bitonic_seq[i] = std::max(left, right);
         bitonic_seq[j] = std::min(left, right);
+    }
+}
+
+// slower bitonic implementation
+void bitonic_merge(std::vector<unsigned int> &bitonic_seq, const int start, const int end, bool ascending) {
+    bitonic_split(bitonic_seq, start, end, ascending);
+    if (end-start > 2) {
+        int mid = start + (end - start) / 2;
+        bitonic_merge(bitonic_seq, start, mid, ascending);
+        bitonic_merge(bitonic_seq, mid, end, ascending);
+    }
+}
+
+void bitonic_split(std::vector<unsigned int> &bitonic_seq, const int start, const int end, bool ascending) {
+    int diff = (end - start) / 2;
+    for (int i = start; i < start + diff; i++) {
+        int j = i + diff;
+        unsigned int left = bitonic_seq[i];
+        unsigned int right = bitonic_seq[j];
+        if ((left < right && !ascending) || (right < left && ascending)) {
+            bitonic_seq[i] = right;
+            bitonic_seq[j] = left;
+        }
     }
 }
 
