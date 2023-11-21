@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
     GPUSortBitonic gpu_sort_bitonic(device);
 
-    auto count = (unsigned long) std::pow(2, 4);
+    auto count = (unsigned long) std::pow(2, 24);
     std::cout << "Generating " << count << " random integers" << std::endl;
     std::vector<unsigned int> random_ints = generate_uints(count);
     std::cout << "Generated " << random_ints.size() << " random integers" << std::endl;
@@ -69,15 +69,15 @@ int main(int argc, char* argv[]) {
 
     // set_log_state(false);
 
-    gpu_sort_bitonic.init_with_data(random_ints_4);
+    // gpu_sort_bitonic.init_with_data(random_ints_4);
 
-    time_func("bitonic_sort_gpu", [&gpu_sort_bitonic]() {
-        reset_timer();
-        gpu_sort_bitonic.execute();
-    });
-    random_ints_4 = gpu_sort_bitonic.get_data();
+    // time_func("bitonic_sort_gpu", [&gpu_sort_bitonic]() {
+    //     reset_timer();
+    //     gpu_sort_bitonic.execute();
+    // });
+    // random_ints_4 = gpu_sort_bitonic.get_data();
 
-    assert(random_ints == random_ints_4);
+    // assert(random_ints == random_ints_4);
 
     pool->release();
 
